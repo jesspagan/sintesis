@@ -19,6 +19,7 @@ This is a **special library** — a curated, closed collection of research docum
 |----|-------|----------|------|------|----------|
 | LIB-001 | [Claude Code Token Efficiency — Complete Reference Guide](claude-code-token-efficiency.md) | `claude-code` `tokens` `context-management` `prompt-caching` `cost-optimization` | reference-guide | 2026-06-16 | Comprehensive guide to managing context window usage in Claude Code: caching behavior, commands (/clear, /compact, /btw), deprecated features, Pro vs Max thresholds, and anti-patterns that waste tokens. |
 | LIB-002 | [Library Science Principles for Digital Special Collections](library-science-principles.md) | `knowledge-management` `agents` `workflow` `tokens` | research-note | 2026-06-16 | Core library science principles adapted for a small, closed codebase library: why special collections use flat structure over hierarchies, how finding aids beat search boxes, the reference interview model, collection development gating, MUSTIE weeding, and the token efficiency payoff of each principle. |
+| LIB-003 | [Claude Code Agent Design Patterns — Reference Guide](claude-code-agent-design-patterns.md) | `agents` `claude-code` `workflow` `tokens` | reference-guide | 2026-06-17 | Comprehensive reference for designing Claude Code subagents: complete frontmatter spec, tool grants and authority enforcement, agents vs skills vs CLAUDE.md decision framework, parallel execution costs, nested agents, fork mechanics, testing patterns, and the agent-creator meta-pattern. |
 
 ---
 
@@ -71,4 +72,4 @@ The Librarian is the **sole authority** over collection changes. Other agents ma
 
 ---
 
-*Last updated: 2026-06-16 by Librarian — added LIB-002, added subject `knowledge-management`*
+*Last updated: 2026-06-17 by Librarian — added LIB-003, added no new subjects*
