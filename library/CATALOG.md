@@ -15,11 +15,15 @@ This is a **special library** — a curated, closed collection of research docum
 
 ## Collection Index
 
-| ID | Title | Subjects | Type | Date | Abstract |
-|----|-------|----------|------|------|----------|
-| LIB-001 | [Claude Code Token Efficiency — Complete Reference Guide](claude-code-token-efficiency.md) | `claude-code` `tokens` `context-management` `prompt-caching` `cost-optimization` | reference-guide | 2026-06-16 | Comprehensive guide to managing context window usage in Claude Code: caching behavior, commands (/clear, /compact, /btw), deprecated features, Pro vs Max thresholds, and anti-patterns that waste tokens. |
-| LIB-002 | [Library Science Principles for Digital Special Collections](library-science-principles.md) | `knowledge-management` `agents` `workflow` `tokens` | research-note | 2026-06-16 | Core library science principles adapted for a small, closed codebase library: why special collections use flat structure over hierarchies, how finding aids beat search boxes, the reference interview model, collection development gating, MUSTIE weeding, and the token efficiency payoff of each principle. |
-| LIB-003 | [Claude Code Agent Design Patterns — Reference Guide](claude-code-agent-design-patterns.md) | `agents` `claude-code` `workflow` `tokens` | reference-guide | 2026-06-17 | Comprehensive reference for designing Claude Code subagents: complete frontmatter spec, tool grants and authority enforcement, agents vs skills vs CLAUDE.md decision framework, parallel execution costs, nested agents, fork mechanics, testing patterns, and the agent-creator meta-pattern. |
+| ID | Title | Subjects | Type | Dates | Abstract |
+|----|-------|----------|------|-------|----------|
+| LIB-001 | [Claude Code Token Efficiency — Complete Reference Guide](claude-code-token-efficiency.md) | `claude-code` `tokens` `context-management` `prompt-caching` `cost-optimization` | reference-guide | 2026-06-16 / 2026-06-16 | Comprehensive guide to managing context window usage in Claude Code: caching behavior, commands (/clear, /compact, /btw), deprecated features, Pro vs Max thresholds, and anti-patterns that waste tokens. |
+| LIB-002 | [Library Science Principles for Digital Special Collections](library-science-principles.md) | `knowledge-management` `agents` `workflow` `tokens` | research-note | 2026-06-16 / 2026-06-16 | Core library science principles adapted for a small, closed codebase library: why special collections use flat structure over hierarchies, how finding aids beat search boxes, the reference interview model, collection development gating, MUSTIE weeding, and the token efficiency payoff of each principle. |
+| LIB-003 | [Claude Code Agent Design Patterns — Reference Guide](claude-code-agent-design-patterns.md) | `agents` `claude-code` `workflow` `tokens` | reference-guide | 2026-06-17 / 2026-06-18 | Comprehensive reference for designing Claude Code subagents and skills: complete agent frontmatter spec, skill file format and $ARGUMENTS substitution, tool grants and authority enforcement, agents vs skills vs CLAUDE.md decision framework, parallel execution costs, nested agents, fork mechanics, testing patterns, and the agent-creator meta-pattern. |
+| LIB-004 | [Claude Code Deep Research Features — Subscription Tiers & Architecture](claude-code-deep-research-features.md) | `claude-code` `workflow` | reference-guide | 2026-06-18 / 2026-06-18 | Reference guide to the two architecturally distinct deep-research features in Claude's ecosystem — the Claude.ai Research Toggle (web UI, Pro+) and the /deep CLI command (Max or API subscription) — covering subscription gates, behavioral differences, and how to replicate the parallel-agent research pattern on a Pro subscription. |
+| LIB-006 | [Research Methodology — How Researchers Do Research](research-methodology-how-researchers-do-research.md) | `knowledge-management` `workflow` `agents` | research-note | 2026-06-18 / 2026-06-18 | Five-angle temporal validity matrix research into how researchers do research: established durable practices (scientific method, systematic reviews, validity/reliability, PRISMA/GRADE), superseded practices driven by the replication crisis (HARKing, p-hacking, closed data, NHST-only), failed approaches and their cognitive/structural root causes (confirmation bias, cherry-picking, data dredging), newly viable AI-assisted methods (LLM-powered SLR, semantic citation graphs, RAG hypothesis generation, preprint-first mandates), and the emerging trajectory (agentic pipelines, multi-agent research teams, adversarial red-teaming as rigor layer, the evaluation gap). Includes cross-referenced implications for improving an AI research agent. |
+
+*Dates column: `created / updated`. Same date means never revised after initial cataloging.*
 
 ---
 
@@ -43,20 +47,7 @@ This is a **special library** — a curated, closed collection of research docum
 
 ## Document Format Standard
 
-Every document in the library **must** open with this frontmatter block:
-
-```
----
-lib-id: LIB-NNN
-title: Full Document Title
-subjects: [subject-one, subject-two]
-type: reference-guide | research-note | decision-record | how-to
-date: YYYY-MM-DD
-abstract: One to three sentences. Must be self-contained — readable without opening the file.
----
-```
-
-Followed immediately by `# Title` as the H1 heading and `*Researched Month Day, Year*` on the next line.
+See `library/TEMPLATE.md` for the complete format spec for currently defined document types, acceptance criteria, and field ownership. TEMPLATE.md is the sole authority — this file does not duplicate it.
 
 ---
 
@@ -72,4 +63,4 @@ The Librarian is the **sole authority** over collection changes. Other agents ma
 
 ---
 
-*Last updated: 2026-06-17 by Librarian — added LIB-003, added no new subjects*
+*Last updated: 2026-06-18 by Librarian — split single Date column into Dates (`created / last-updated`) across all collection index rows; added Dates column guidance note; prior: rewrote TEMPLATE.md (agent-optimized); consolidated Document Format Standard to TEMPLATE.md (sole authority); fixed LIB-003 frontmatter date; reclassified LIB-004 from research-note to reference-guide and restructured body for lookup*

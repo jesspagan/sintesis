@@ -3,8 +3,9 @@ lib-id: LIB-003
 title: Claude Code Agent Design Patterns — Reference Guide
 subjects: [agents, claude-code, workflow, tokens]
 type: reference-guide
-date: 2026-06-17
-abstract: Comprehensive reference for designing Claude Code subagents: complete frontmatter spec, tool grants and authority enforcement, agents vs skills vs CLAUDE.md decision framework, parallel execution costs, nested agents, fork mechanics, testing patterns, and the agent-creator meta-pattern.
+created: 2026-06-17
+updated: 2026-06-18
+abstract: Comprehensive reference for designing Claude Code subagents and skills: complete agent frontmatter spec, skill file format and $ARGUMENTS substitution, tool grants and authority enforcement, agents vs skills vs CLAUDE.md decision framework, parallel execution costs, nested agents, fork mechanics, testing patterns, and the agent-creator meta-pattern.
 ---
 
 # Claude Code Agent Design Patterns — Reference Guide
@@ -152,7 +153,43 @@ A skill can also **run inside a subagent** using `context: fork` in the skill's 
 
 ---
 
-## 4. Nested Agents — What's Supported
+## 4. Skill File Format — Complete Spec
+
+Skills are Markdown files that define reusable procedures, invocable by users or agents on demand.
+
+**Location:** `.claude/skills/[skill-name]/SKILL.md` (project) or `~/.claude/skills/[skill-name]/SKILL.md` (user/global). Project overrides user.
+
+**Required frontmatter fields:**
+
+| Field | Description |
+|-------|-------------|
+| `name` | Identifier used for invocation (e.g., `name: deep-research` → invoked as `/deep-research`). |
+| `description` | When/why to use this skill — Claude reads this for auto-discovery and decides whether to invoke proactively. |
+
+**Body:** Markdown instructions Claude follows when the skill is invoked. `$ARGUMENTS` captures everything the user typed after the command name (e.g., `/deep-research climate change` → `$ARGUMENTS` = `climate change`).
+
+**Helper files:** Scripts, templates, or other resources can live in the same directory alongside SKILL.md and be referenced from the body.
+
+**Discovery:** Skills are loaded at session start. New skill files added manually require a session restart to take effect. Skills created via the UI take effect immediately.
+
+**Token cost:** ~100 tokens for the description in context (always loaded); full body is loaded only on invocation.
+
+### Minimal Example
+
+```markdown
+---
+name: summarize
+description: Summarize a file or text passage. Use when asked to condense content.
+---
+
+Summarize the following concisely, preserving key points:
+
+$ARGUMENTS
+```
+
+---
+
+## 5. Nested Agents — What's Supported
 
 **As of Claude Code v2.1.172**, subagents can spawn their own subagents.
 
@@ -168,7 +205,7 @@ A skill can also **run inside a subagent** using `context: fork` in the skill's 
 
 ---
 
-## 5. Fork vs. Fresh Subagent
+## 6. Fork vs. Fresh Subagent
 
 | | Fork | Fresh Subagent |
 |--|------|----------------|
@@ -186,7 +223,7 @@ A skill can also **run inside a subagent** using `context: fork` in the skill's 
 
 ---
 
-## 6. Authority Enforcement Patterns
+## 7. Authority Enforcement Patterns
 
 Claude Code enforces authority through **tool restriction** (hard) and **convention** (soft). CLAUDE.md rules are convention — they shape Claude's behavior but are not harness-enforced.
 
@@ -227,7 +264,7 @@ For authority over files where tool restriction cannot help (e.g., "only agent-c
 
 ---
 
-## 7. Parallel Execution — Token Economics
+## 8. Parallel Execution — Token Economics
 
 ### Cost Model
 
@@ -249,7 +286,7 @@ Skip when: tasks require frequent back-and-forth, tasks share context, the synth
 
 ---
 
-## 8. What Loads at Subagent Startup
+## 9. What Loads at Subagent Startup
 
 A fresh (non-fork) subagent starts with:
 
@@ -266,7 +303,7 @@ A fresh (non-fork) subagent starts with:
 
 ---
 
-## 9. Agent Testing Patterns
+## 10. Agent Testing Patterns
 
 There is no harness-native test runner for agents. Use behavioral testing:
 
@@ -289,7 +326,7 @@ For semantic quality: have a separate reviewer agent evaluate the output against
 
 ---
 
-## 10. Agent Maintenance Patterns
+## 11. Agent Maintenance Patterns
 
 ### Version Control
 Project agents (`.claude/agents/`) belong in git. Treat agent changes like code changes — they affect behavior and deserve review.
@@ -310,7 +347,7 @@ Use `memory: project` on the agent-creator to accumulate registry knowledge acro
 
 ---
 
-## 11. Quick Reference — Common Patterns
+## 12. Quick Reference — Common Patterns
 
 ### Read-Only Auditor
 ```yaml

@@ -22,4 +22,6 @@ This applies even when the content is already prepared — the librarian assigns
 
 This applies even when the content is already prepared — the agent-creator enforces the format standard, checks for authority conflicts, runs the testing protocol, and keeps the registry consistent.
 
-**Genesis exception:** agent-creator itself was written directly at initial installation, before it existed to manage its own creation. This one-time exception is intentional and does not apply to any other agent or to any future changes, including updates to agent-creator itself.
+**Genesis exception:** agent-creator itself was written directly at initial installation, before it existed to manage its own creation. This one-time exception is intentional and does not apply to any other agent.
+
+**Agent-creator maintenance exception:** agent-creator cannot apply its own testing protocol to itself — doing so would be circular. Updates to `agent-creator.md` are made directly by the user or main-thread Claude Code (not routed through agent-creator). The user acts as the external auditor: Tests 1 and 4 are static checks on the file; Tests 2 and 3 are run by invoking agent-creator from the main thread with in-scope and out-of-scope scenarios. This exception covers modifications to agent-creator only — all other agent files must go through agent-creator as normal.

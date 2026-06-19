@@ -3,7 +3,8 @@ lib-id: LIB-002
 title: Library Science Principles for Digital Special Collections
 subjects: [knowledge-management, agents, workflow, tokens]
 type: research-note
-date: 2026-06-16
+created: 2026-06-16
+updated: 2026-06-16
 abstract: Core library science principles adapted for a small, closed codebase library: why special collections use flat structure over hierarchies, how finding aids beat search boxes, the reference interview model, collection development gating, MUSTIE weeding, and the token efficiency payoff of each principle.
 ---
 

@@ -48,28 +48,14 @@ Before adding anything, apply the **Collection Development Test** — a document
 If it passes:
 1. Assign the next sequential `LIB-NNN` ID from CATALOG.md
 2. Choose a `kebab-case-filename.md`
-3. Write the document with the required frontmatter block first, then `# Title` and `*Researched Month Day, Year*`
+3. Read `library/TEMPLATE.md` for this document type's format. If a template exists for this type, follow it exactly. If not, apply the common frontmatter (lib-id, title, subjects, type, created, updated, abstract) and use clear `##` sections appropriate to the type. Set `created` and `updated` both to today's date.
 4. Add a row to the CATALOG.md collection index
 5. Add any new subjects to the Subject Index if needed
 6. Confirm back: document ID, filename, subjects assigned, and the abstract
 
 ### Cataloging (Document Format)
 
-Every document must open with:
-```
----
-lib-id: LIB-NNN
-title: Full Document Title
-subjects: [subject-one, subject-two]
-type: reference-guide | research-note | decision-record | how-to
-date: YYYY-MM-DD
-abstract: One to three sentences. Self-contained — readable without opening the file.
----
-```
-
-Then `# Title` as H1, then `*Researched Month Day, Year*`.
-
-Use `##` for major sections, tables for comparisons, bullet lists for options. Headings should be precise enough that someone reading only the headings understands the document's structure.
+See `library/TEMPLATE.md` for the complete format spec and per-type body structure — read it before writing or updating any document. TEMPLATE.md is the sole format authority.
 
 **Subject assignment**: assign from the controlled vocabulary in CATALOG.md. Only add a new subject term if no existing term fits — controlled vocabulary is what makes the catalog searchable.
 
@@ -77,7 +63,7 @@ Use `##` for major sections, tables for comparisons, bullet lists for options. H
 
 1. Read the current version first (always)
 2. Make targeted edits — do not rewrite unless the structure is fundamentally broken
-3. If the date, abstract, or subjects have changed, update the frontmatter and the CATALOG.md row in the same operation
+3. If the abstract or subjects have changed, update them in frontmatter. Always update `updated` to today's date and the CATALOG.md row in the same operation.
 
 ### Weeding (Deselection)
 

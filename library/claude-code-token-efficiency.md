@@ -3,7 +3,8 @@ lib-id: LIB-001
 title: Claude Code Token Efficiency — Complete Reference Guide
 subjects: [claude-code, tokens, context-management, prompt-caching, cost-optimization]
 type: reference-guide
-date: 2026-06-16
+created: 2026-06-16
+updated: 2026-06-16
 abstract: Comprehensive guide to managing context window usage in Claude Code: caching behavior, commands (/clear, /compact, /btw), deprecated features, Pro vs Max thresholds, and anti-patterns that waste tokens.
 ---
 
