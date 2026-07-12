@@ -1,0 +1,115 @@
+---
+name: hooks-and-harnesses
+description: What "hooks" and "harness" mean in agentic coding systems, hook taxonomy and enforcement model, cross-framework comparison, and the security/governance landscape around them
+type: research
+---
+
+# Hooks and harnesses in the agentic economy
+
+Prepared 2026-07-11. Grounded in Anthropic's official Claude Code and Agent SDK documentation, cross-referenced against equivalent mechanisms in OpenAI's Agents SDK/Codex CLI, LangChain/LangGraph, AutoGPT/AutoGen, Cursor, and the Model Context Protocol, plus published security research (Check Point's Claude Code hook CVEs) and 2026 industry/governance commentary (OWASP, Microsoft, Gartner, McKinsey, Forrester, NIST, Linux Foundation). Builds on and should be read alongside [pre-commit-review-orchestration](./pre-commit-review-orchestration.md), which covers hooks specifically as a pre-commit enforcement layer; this memo is the broader treatment of hooks and harnesses as a general concept.
+
+**how to apply:** consult when explaining what a "hook" is, designing a hook for this or another repo's `.claude/settings.json`, evaluating a non-Claude agent framework's equivalent control mechanism, or assessing the security posture of a hook-based guardrail.
+
+## 1. What "harness" means
+
+Anthropic's own term for the runtime layer wrapping a model is the **"agentic harness"**: "the tools, context management, and execution environment that turn a language model into a capable coding agent." It has three parts — the agentic loop (gather context → act → verify), the tool surface (file ops, search, execution, web, code intelligence), and extensibility layers (skills, MCP, hooks, subagents). The harness is what mediates *every* piece of the model's contact with the outside world; the model itself never touches a filesystem or a shell directly.
+
+The Claude Agent SDK is the same harness offered as a library rather than a CLI — you host the agent loop yourself, but hooks, tools, and permissioning follow the same shape, expressed as typed callbacks instead of settings-file shell commands (§3).
+
+Every other agent framework surveyed has some version of this same layer, even where it isn't named "harness": Codex CLI splits it into an explicit **sandbox mode** (what the agent can technically touch) crossed with an **approval policy** (when it must ask first); Cursor calls its version a **Run Mode** governed by `permissions.json`; LangGraph's harness is the **graph + checkpointer**, which is what makes pause/resume possible at all. The common thread: wherever an LLM has been given the ability to act autonomously, something outside the model has to own the decision of *whether an action is allowed to happen*, because the model's own judgment about that is a probabilistic recommendation, not a boundary.
+
+## 2. What a hook is, and the taxonomy of the mechanism
+
+A **hook** is a fixed interception point in the harness's lifecycle where user- or organization-supplied logic runs automatically, independent of whether the model "decides" to invoke it. In Claude Code that's a shell command declared in `settings.json`; in the Agent SDK it's a typed callback function; in other frameworks it goes by guardrail, callback, interrupt, or middleware — see §4 for the cross-framework mapping.
+
+**Claude Code's hook taxonomy** (23+ named events in `settings.json`) breaks into four groups:
+
+- **Per-session** — `SessionStart` (inject context, exit 0 to add context to stdout), `SessionEnd` (cleanup only, cannot block).
+- **Per-turn** — `UserPromptSubmit` (inject context before Claude sees the prompt), `Stop` (can force Claude to keep working via exit 2 or JSON `decision:"block"` — this is how deterministic "you must run tests before finishing" gates get built), `PreCompact`/`PostCompact` (re-inject context lost to summarization).
+- **Per-tool-call — the primary enforcement point** — `PreToolUse` can **block** (exit 2), **allow** (skip the permission prompt), **deny** (cancel with a reason fed back to the model), or **rewrite the call** (`updatedInput` JSON); `PostToolUse` can transform output or add context but cannot undo an action already taken; `PostToolUseFailure` handles errors.
+- **Subagent** — `SubagentStart`/`SubagentStop` can observe but not block spawning.
+
+Configuration nests three levels deep: **event → matcher** (regex/exact filter on tool name, e.g. `"Bash"`, `"Edit|Write"`, `"mcp__.*"`, plus an optional `"if"` condition like `Edit(*.env)`) **→ handler array** (shell command, HTTP call, MCP tool, LLM prompt, or agent). Exit code 0 = normal flow continues; exit 2 = block, stderr shown as feedback to the model; anything else = non-blocking error. For finer control a hook can emit JSON to stdout with `permissionDecision: allow|deny|ask|defer`.
+
+**The Agent SDK's version** is structurally the same taxonomy (`PreToolUse`, `PostToolUse`, `PostToolUseFailure`, `Stop`, `SubagentStart/Stop`, `PreCompact`, `UserPromptSubmit`, plus SDK-only `Notification`/`PermissionRequest`, and in TypeScript `SessionStart/End`, `TaskCompleted`, `ConfigChange`, and others) but delivered as an in-process callback (`HookMatcher(matcher="Bash", hooks=[my_callback])`) rather than a subprocess — meaning it can read runtime state directly instead of only what's serialized to JSON on stdin, and adds a `"defer"` outcome (pause the agent, let the calling application collect input, resume later) alongside allow/deny/ask. Precedence when multiple hooks fire is most-restrictive-wins: `deny > defer > ask > allow`, and hook-returned `allow` never overrides an admin-configured deny rule.
+
+## 3. Why hooks were already a solved pattern before agents existed — and what's genuinely new now
+
+The mechanism is not new. Git hooks (`pre-commit`, `post-receive`), webhooks, CI/CD gate stages, OS-level API hooking, and editor/browser extension lifecycle hooks have used exactly this shape — "run this at a fixed interception point, regardless of what triggered the surrounding flow" — since long before LLMs. What's new is the *reason* it's suddenly load-bearing:
+
+- **The thing being intercepted became non-deterministic.** A CI gate intercepts a deterministic build process; a Claude Code `PreToolUse` hook intercepts a probabilistic decision by a model about whether to run `rm -rf` or push to `main`. You can't fix a probabilistic judgment by asking it more nicely — the only way to guarantee an outcome is to put a deterministic check *outside* the thing making the judgment call.
+- **The blast radius of one "step" expanded.** A single agent turn can chain arbitrary tool calls autonomously (read → edit → shell → commit → push) with no human in the loop between them by default, unlike a human developer who implicitly self-checks between each action.
+- **The threat model now includes the instructions themselves.** Content the agent reads (a file, a web page, an MCP tool's output) can contain adversarial instructions aimed at *it*, not just at a human. A hook has to assume the model's own stated intent might already be compromised — which is a materially different design constraint than "block risky manual commands," and is a major reason MCP's spec treats tool `annotations` from untrusted servers as themselves untrusted (§4).
+
+Anthropic's own framing of this (the "Steering Claude Code" blog post) makes the distinction explicit as an **enforcement ladder**: CLAUDE.md and prose instructions are advisory ("Claude treats them as context, not enforced configuration" — the model can forget or deviate); hooks and admin-configured permission deny-rules are deterministic (the model cannot override them regardless of intent); subagents add isolation (separate context, own permission rules) but are not themselves an enforcement mechanism — a subagent can still be told to skip a step. See [pre-commit-review-orchestration](./pre-commit-review-orchestration.md) §3 on the enforcement ladder for how this plays out specifically at the commit boundary.
+
+## 4. Cross-framework comparison
+
+The same three shapes — observational callback, blocking guardrail, pause-for-approval — recur under different names everywhere a harness mediates agent action:
+
+| Framework | Observational hook | Blocking/gating mechanism | Approval/HITL pattern |
+|---|---|---|---|
+| **Claude Code / Agent SDK** | `PostToolUse` (can't undo, can transform output) | `PreToolUse` exit 2 / `permissionDecision:"deny"` | Permission prompts; `"ask"`/`"defer"` outcomes |
+| **OpenAI Agents SDK** | `RunHooks`/`AgentHooks` (`on_tool_start/end`, mostly observational) | **Guardrails** — input/output/tool guardrails that set `tripwire_triggered=True` and hard-halt the run | N/A at SDK level (app-built) |
+| **OpenAI Assistants API** | — | Run enters `requires_action` status, blocking until `submit_tool_outputs` is POSTed (10-min window) | Mandatory pause, but no built-in approve/deny concept — gating is entirely the calling app's responsibility |
+| **Codex CLI** | — | **Sandbox mode** (filesystem/network scope: Read Only / workspace-write / full access) | **Approval policy** (`on-request`, etc.), switchable mid-session via `/mode` — orthogonal axis from sandboxing |
+| **LangChain** | `BaseCallbackHandler` (`on_chain_start`, `on_tool_start/end`) — observability/tracing | A handler *can* raise to abort, but this isn't the designed mechanism | — |
+| **LangGraph** | — | — | **`interrupt()`** — pauses a graph node, surfaces a JSON payload to the client; requires a checkpointer; resuming *re-runs the entire node from the top*, not from the interrupt line; resumed via `Command(resume=...)` — the canonical HITL approve/edit/reject pattern |
+| **AutoGPT (classic)** | — | — | Per-step y/n confirmation by default; `-c/--continuous` disables all confirmation (docs explicitly call this "NOT recommended... potentially dangerous") |
+| **AutoGen** | — | — | `UserProxyAgent.human_input_mode`: `NEVER` / `TERMINATE` (default, only asks at a termination condition) / `ALWAYS` (asks before every reply) |
+| **Cursor** | — | `permissions.json` allow/deny lists (global + per-repo, admin dashboard takes precedence) | **Auto-review** mode (v3.6+): allowlist match → sandboxed execution where possible → classifier subagent decides allow/retry/ask for anything uncovered |
+| **MCP** | — | **None at the protocol level** — tool `annotations` (e.g. destructive/read-only hints) are explicitly *untrusted* unless the server itself is trusted | Spec says clients "SHOULD" keep a human in the loop and confirm sensitive ops — this is guidance, not an enforced wire-protocol gate. Two structured features exist: **elicitation** (server pauses mid-call for structured input, mandatory accept/decline/cancel) and **sampling** (server requests a completion through the client; spec expects the client to show the exact prompt and response for approval before either send) |
+
+**The load-bearing observation**: only mechanisms with a genuine block/deny primitive that lives *outside* model judgment (Claude Code/SDK's `PreToolUse` deny, OpenAI's guardrail tripwire, Codex's sandbox mode, LangGraph's `interrupt()`, Cursor's `permissions.json`) are actually enforcement. Everything else in the table (observational callbacks, MCP's SHOULD-level guidance) is telemetry or convention — useful, but not a boundary. MCP is the starkest case: it's the interoperability layer everyone builds on, and it deliberately punts enforcement to each client's own harness rather than standardizing it — which is exactly why Claude Code, Cursor, etc. each had to build their own approval UI on top of the same protocol.
+
+A third category has emerged since 2025-2026 sitting *above* individual harnesses: **agent gateways** (Portkey's Agent Gateway, Lakera Guard, the Linux-Foundation-donated `agentgateway` project) intercepting agent traffic — including MCP calls — at a network layer, adding centralized budget/permission/PII enforcement across whatever harness or framework is underneath. This is the hook/guardrail pattern generalized to a fleet of agents rather than a single session, and its emergence (plus Palo Alto Networks' 2026 acquisition of Portkey specifically to govern "privileged-insider agents") is itself evidence that per-harness hooks alone aren't considered sufficient at organizational scale.
+
+## 5. The security model: hooks run with your full permissions, and that has already caused a real CVE
+
+Anthropic's documentation is direct about this: hooks are "user-defined shell commands that execute at specific points in Claude Code's lifecycle" with no sandboxing or permission-dropping — they run with the full permissions of whoever is running Claude Code, and unlike a Bash tool call there is **no confirmation prompt** before a hook fires. The security model is *trust by configuration*, not runtime enforcement: it depends on hook scripts being written correctly, hook authors not being compromised, and hook configs in version control having actually been reviewed before merge.
+
+This is not theoretical. **Check Point Research disclosed CVE-2025-59536 (CVSS 8.7)** in Claude Code: a malicious repo-level `.claude/settings.json` hook could execute arbitrary shell commands with full developer permissions *before the user gave any consent*, triggered simply by cloning the repository — independently corroborated by The Hacker News and Security Affairs. A companion flaw (CVE-2026-21852) let a manipulated `ANTHROPIC_BASE_URL` exfiltrate API keys. Anthropic's own GitHub issue tracker states it plainly: "Hooks run with your full user permissions. There is no sandbox. A misconfigured hook can delete files, expose secrets, or execute arbitrary code."
+
+**Practical implication for this repo or any other**: a hook committed to `.claude/settings.json` is not a neutral configuration file — it's executable code that runs unattended, and should get the same scrutiny as a CI pipeline definition or a pre-commit script, not the lighter scrutiny people default to for "just settings." Anyone who can get a PR merged (or, per the CVE, just get a clone triggered) can potentially get shell execution.
+
+**Sandboxing is the complementary mitigation, not a substitute.** Anthropic's own engineering blog on Claude Code sandboxing (OS-level isolation via Linux bubblewrap / macOS Seatbelt) reports an 84% cut in permission prompts, and — critically — covers not just Claude Code's own actions but "any scripts, programs, or subprocesses that are spawned," which is exactly the blast-radius gap hooks alone leave open (a hook can still shell out to something unbounded). The relationship is: **hooks gate specific decisions; sandboxes bound what happens regardless of what executes.** Neither replaces the other. The broader market (E2B on Firecracker microVMs, Modal on gVisor) is converging on the same idea for agent-executed code generally.
+
+## 6. Defense in depth — a real pattern, with a real caveat
+
+Microsoft's security blog ("Defense in depth for autonomous AI agents," May 2026) states the design principle directly: *"The critical design mistake here is letting the model decide when human review is required... HITL review ideally is enforced deterministically by the application layer, or orchestrator, not delegated to the model."* An independent practitioner source (Dotzlaw Consulting) puts a number on the gap this closes: *"A prompt instruction achieves 90% compliance. A hook achieves 100%. That 10% gap is where production systems fail."*
+
+The caveat, and it's a real one: a co-authored paper from OpenAI/Anthropic/DeepMind researchers ("The Attacker Moves Second," Oct 2025) found adaptive attackers beat 12 published layered defenses more than 90% of the time; separate "STACK" attack research found 71% success against multi-layer defenses specifically. **Layering defenses is good practice and not by itself sufficient against a motivated adversary** — it raises the cost of an attack, it doesn't eliminate one. This is the same shape of caveat [pre-commit-review-orchestration](./pre-commit-review-orchestration.md) raises about automated review and habituation: a control that "usually catches problems" can create false confidence that's worse than having no control, if the humans and processes around it start trusting it uncritically.
+
+## 7. Governance and standardization — early and uneven
+
+**OWASP's "Top 10 for Agentic Applications 2026"** names the failure modes this section is about directly: ASI04 (Agentic Supply Chain Vulnerabilities — "your agent's dependencies are live attack surfaces," specifically calling out MCP servers/plugins executing arbitrary code) and ASI05 (Unexpected Code Execution — "'just helping with code' becomes shell access"). Worth flagging honestly: the primary document is a PDF that's hard to verify against, and secondary summaries of it disagree on some category labels — a real sourcing weakness in the current state of this guidance, not just a nitpick.
+
+**No enforced technical standard exists yet.** Google's Agent2Agent (A2A) protocol (donated to the Linux Foundation, June 2025, TSC spanning AWS/Cisco/Google/IBM/Microsoft/Salesforce/SAP/ServiceNow) standardizes inter-agent discovery and communication — a different layer from intra-agent tool-call interception, and not a hook-equivalent standard. NIST has acknowledged the gap (a Feb 2026 RFI on agent security drew 937 comments) but has not published an agentic-specific profile analogous to its 2024 Generative AI Profile; the Cloud Security Alliance's community-driven "Agentic NIST AI RMF Profile" is an unofficial stopgap, not a government standard.
+
+**Analyst commentary corroborates the gap from the enterprise-adoption side** rather than the technical-standards side: Gartner's 2026 Hype Cycle for Agentic AI projects over 40% of agent projects will be cancelled by 2027; McKinsey's 2026 AI-trust research finds only 23% of organizations have scaled deployments; Bain frames it plainly — "the hard enterprise problem is no longer simply building agents. It is managing them in production." The specific phrase "agentic economy" shows up more in industry press and vendor marketing than as a term of art from these analyst firms directly, so it should be read as a framing device rather than a technical category.
+
+**The overall picture**: hooks (and their equivalents across frameworks) are the concrete, shipping mechanism doing this enforcement work today, ahead of any formal standard for how it should be done. The gap between "individual harnesses each built their own version of this" and "an agreed cross-framework standard for agent action governance" is real and currently unclosed — which is also the opening the agent-gateway product category (§4) is moving into.
+
+## Sources
+
+- Claude Code docs: how-claude-code-works, hooks, hooks-guide, memory, permissions, security — code.claude.com/docs/en/
+- Claude Agent SDK docs: overview, hooks — code.claude.com/docs/en/agent-sdk/
+- Anthropic blog: ["Steering Claude Code: when to use CLAUDE.md, skills, hooks, and subagents"](https://claude.com/blog/steering-claude-code-skills-hooks-rules-subagents-and-more)
+- Anthropic engineering blog: ["Making Claude Code more secure and autonomous with sandboxing"](https://www.anthropic.com/engineering/claude-code-sandboxing)
+- OpenAI Agents SDK docs: [guardrails](https://openai.github.io/openai-agents-python/guardrails/), [lifecycle hooks](https://openai.github.io/openai-agents-python/ref/lifecycle/); [Assistants API submit_tool_outputs](https://developers.openai.com/api/reference/resources/beta/subresources/threads/subresources/runs/methods/submit_tool_outputs); [Codex agent approvals/security](https://developers.openai.com/codex/agent-approvals-security), [sandboxing](https://developers.openai.com/codex/concepts/sandboxing)
+- LangChain [callbacks reference](https://reference.langchain.com/python/langchain_core/callbacks/); LangGraph [interrupts](https://docs.langchain.com/oss/python/langgraph/interrupts)
+- AutoGPT [classic usage docs](https://docs.agpt.co/classic/usage/); AutoGen [human-in-the-loop tutorial](https://microsoft.github.io/autogen/stable//user-guide/agentchat-user-guide/tutorial/human-in-the-loop.html)
+- Cursor [permissions reference](https://cursor.com/docs/reference/permissions); Backslash Security, [Cursor autorun denylist flaw](https://www.backslash.security/blog/cursor-ai-security-flaw-autorun-denylist)
+- MCP spec: [tools](https://modelcontextprotocol.io/specification/2025-06-18/server/tools), [elicitation](https://modelcontextprotocol.io/specification/draft/client/elicitation), [sampling](https://modelcontextprotocol.io/specification/2025-06-18/client/sampling)
+- Check Point Research, [CVE-2025-59536 disclosure](https://research.checkpoint.com/2026/rce-and-api-token-exfiltration-through-claude-code-project-files-cve-2025-59536/)
+- Microsoft Security Blog, ["Defense in depth for autonomous AI agents"](https://www.microsoft.com/en-us/security/blog/2026/05/14/defense-in-depth-autonomous-ai-agents/) (May 2026)
+- Dotzlaw Consulting, [Claude Code security primitives](https://dotzlaw.com/insights/claude-security/) (single independent source, cited as directly on-point but not independently corroborated)
+- "The Attacker Moves Second" (arXiv, Oct 2025, OpenAI/Anthropic/DeepMind co-authored)
+- OWASP GenAI Security Project, ["Top 10 for Agentic Applications 2026"](https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/) (primary PDF not independently verified; secondary summaries disagree on some labels)
+- Gartner 2026 Hype Cycle for Agentic AI; McKinsey ["State of AI trust in 2026"](https://www.mckinsey.com/capabilities/tech-and-ai/our-insights/tech-forward/state-of-ai-trust-in-2026-shifting-to-the-agentic-era); Forrester "State of Agentic AI in 2026"; Bain & Company, [Google Cloud Next 2026 coverage](https://www.bain.com/insights/google_cloud_next_2026_the_agentic_enterprise_control_plane_comes_into_view/)
+- Linux Foundation A2A protocol governance (announced June 2025); NIST CAISI agent security RFI (Feb 2026)
+
+## Related
+
+- [pre-commit-review-orchestration](./pre-commit-review-orchestration.md) — hooks as one layer of a specific pipeline (pre-commit code review); this memo is the broader treatment of hooks/harnesses as a concept across the ecosystem
+- [claude-code-orchestration-primitives](./claude-code-orchestration-primitives.md) — the hooks vs. CLAUDE.md vs. skill vs. subagent decision within Claude Code specifically
