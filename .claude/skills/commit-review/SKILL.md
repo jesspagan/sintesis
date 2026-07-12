@@ -30,7 +30,7 @@ The diff about to be committed contains no API keys, tokens, credentials, or oth
 
 ## 6. Actually look at the diff
 
-Run `git status` and `git diff` and review what's really about to be committed — don't rely on this checklist as a substitute for reading the diff.
+Run `git status` and `git diff --staged` (plain `git diff` only shows unstaged changes, not what's actually about to be committed) and review what's really about to be committed — don't rely on this checklist as a substitute for reading the diff.
 
 ## Output
 

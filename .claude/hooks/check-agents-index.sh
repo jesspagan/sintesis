@@ -1,8 +1,10 @@
 #!/bin/bash
-# PostToolUse hook: fires after any Edit/Write to AGENTS.md.
+# PostToolUse hook: fires after any Edit/MultiEdit/Write to AGENTS.md.
 # Flags index lines over the length budget stated in the research skill
-# (.claude/skills/research/SKILL.md step 2) and CLAUDE.md, so it's caught
-# at write time, not only at commit-review time.
+# (.claude/skills/research/SKILL.md step 2) and the commit-review skill
+# (item 3) — CLAUDE.md notes this is hook-enforced but doesn't itself
+# state the number — so it's caught at write time, not only at
+# commit-review time.
 
 FILE="${CLAUDE_PROJECT_DIR:-.}/AGENTS.md"
 MAX=170
