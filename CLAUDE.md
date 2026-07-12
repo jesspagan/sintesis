@@ -6,7 +6,7 @@ Research-memo repository. See `AGENTS.md` for the memo index and per-memo conven
 
 Follow this procedure in order — don't skip a step because it "looks fine":
 
-1. **Review.** Run the `commit-review` skill and act on its findings before staging anything.
+1. **Stage, then review.** Stage the changes, then run the `commit-review` skill and act on its findings — its own checklist checks `git diff --staged`, which only reflects reality once staging has already happened.
 2. **Branch.** Never commit directly to `main`/`master`. If currently on `main`/`master`, create a feature branch first: `<type>/<slug>`, where `type` is `feat` (new capability — a skill, hook, memo covering genuinely new ground), `fix` (correcting something wrong), `docs` (memo/doc content, no process change), or `chore` (tooling/config/process). Pick whichever fits the actual change; when a commit mixes types, use the one that dominates. This is also hook-enforced, not just advisory — `.claude/hooks/block-main-commit.py` (`PreToolUse`) blocks the commit outright if run on `main`/`master`, since it's a "must not happen" case rather than a judgment call.
 3. **Commit**, following the message format below.
 4. **Push** the branch to `origin` (`git push -u origin <branch>`) so the work actually lands somewhere, not just locally.

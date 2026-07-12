@@ -20,10 +20,16 @@ done` still reports overall success even if the commit inside it failed,
 which is exactly the shape of command this session writes constantly.
 Text-matching git's own failure messages ("nothing to commit", etc.) was
 tried first and rejected — it only covers the specific wordings checked
-for, missing e.g. pre-commit hook rejection or an aborted editor. Instead
-this checks whether HEAD's commit is actually *fresh* (created within the
-last minute): any failure mode leaves HEAD unmoved, so a stale timestamp
-means nothing was created regardless of why.
+for, missing e.g. pre-commit hook rejection or an aborted editor. A fixed
+freshness window ("HEAD's commit is within the last N seconds") was tried
+next and also rejected: for a slow compound command like `git commit -m
+x; sleep 120`, the commit happens near the *start* of the tool call but
+this hook only runs after the whole thing finishes, so a fixed window
+measured from hook-eval time would call a genuinely fresh commit stale.
+Instead this uses the payload's own `duration_ms` to reconstruct when the
+tool call *started*, and checks the commit against that — self-calibrating
+regardless of how long the surrounding command took, rather than guessing
+a window size.
 
 Resolves the target repo via the payload's `cwd` rather than the hook
 process's own cwd, which isn't guaranteed to match."""
@@ -39,11 +45,12 @@ from _git_commit_detect import invokes_git_commit
 SUBJECT_MAX = 72
 BODY_LINE_MAX = 3
 BODY_CHAR_MAX = 400
-FRESHNESS_WINDOW_SECONDS = 60
+FRESHNESS_SLACK_SECONDS = 10  # clock skew / hook-dispatch fuzz around the tool call's own start
 
 data = json.load(sys.stdin)
 command = data.get("tool_input", {}).get("command", "")
 cwd = data.get("cwd") or "."
+duration_ms = data.get("duration_ms") or 0
 
 if not invokes_git_commit(command):
     sys.exit(0)
@@ -64,13 +71,14 @@ subject = git_log("%s")
 if subject is None:
     sys.exit(0)
 
+call_start = time.time() - (duration_ms / 1000.0)
 commit_ts = git_log("%ct")
 try:
-    is_fresh = commit_ts is not None and (time.time() - int(commit_ts)) <= FRESHNESS_WINDOW_SECONDS
+    is_fresh = commit_ts is not None and int(commit_ts) >= call_start - FRESHNESS_SLACK_SECONDS
 except ValueError:
     is_fresh = False
 if not is_fresh:
-    sys.exit(0)  # HEAD wasn't just moved — this commit attempt didn't actually create one
+    sys.exit(0)  # HEAD wasn't moved during this tool call — this commit attempt didn't actually create one
 
 body = git_log("%b") or ""
 

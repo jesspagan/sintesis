@@ -46,13 +46,16 @@ tries to run it, so nothing was going to commit anyway.
 
 Unwraps leading environment-variable assignments (`GIT_AUTHOR_NAME=x git
 commit ...`) and common wrapper commands (`env`/`command`/`exec`/`sudo`/
-`nice`/`nohup`) before checking for `git`, since a segment starting with
-any of those would otherwise never be recognized as a git invocation at
-all — not a subtler false positive/negative like the other cases above,
-a complete bypass. `env` with its own flags (`env -i ...`, `env -u NAME
-...`) isn't handled — that's an acknowledged remaining gap, not solved
-here, since fully parsing `env`'s own option grammar is disproportionate
-to how likely that specific combination is in practice.
+`nice`/`nohup`), *including their own flags* (`sudo -u root git commit`),
+before checking for `git` — a segment starting with any of these would
+otherwise never be recognized as a git invocation at all: not a subtler
+false positive/negative like the other cases above, a complete bypass.
+WRAPPER_VALUE_TAKING_FLAGS covers the common value-taking flags across
+these wrappers (`-u`/`-g` for user/group, `-C` for a directory, etc.);
+this isn't an exhaustive model of each wrapper's full option grammar
+(e.g. `env`'s own `-S`/`--split-string` isn't covered) — a bounded,
+documented gap rather than either an exhaustive parser or the previous
+complete miss.
 
 This is the *only* thing that should decide whether a Bash command
 invokes `git commit` — settings.json intentionally does not gate these
@@ -62,13 +65,14 @@ doesn't fire, the script never runs at all."""
 import re
 import shlex
 
-OPERATORS = {"&&", "||", ";", "|"}
+OPERATORS = {"&&", "||", ";", "|", "&"}
 VALUE_TAKING_GLOBAL_OPTS = {
     "-C", "-c",
     "--config-env", "--git-dir", "--work-tree", "--namespace",
     "--list-cmds", "--attr-source",
 }
 WRAPPER_COMMANDS = {"env", "command", "exec", "sudo", "nice", "nohup"}
+WRAPPER_VALUE_TAKING_FLAGS = {"-u", "-g", "-C", "-p", "-r", "-t", "-h"}
 ASSIGNMENT_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*=")
 
 
@@ -76,8 +80,16 @@ def _unwrap(tokens):
     i = 0
     while i < len(tokens):
         tok = tokens[i]
-        if ASSIGNMENT_RE.match(tok) or tok in WRAPPER_COMMANDS:
+        if ASSIGNMENT_RE.match(tok):
             i += 1
+            continue
+        if tok in WRAPPER_COMMANDS:
+            i += 1
+            while i < len(tokens) and tokens[i].startswith("-"):
+                if tokens[i] in WRAPPER_VALUE_TAKING_FLAGS:
+                    i += 2
+                else:
+                    i += 1
             continue
         break
     return tokens[i:]
