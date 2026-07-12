@@ -9,11 +9,6 @@ message containing one of those characters. A plain `git\\s+commit` regex
 also misses global options between `git` and the subcommand
 (`git -c user.email=x commit -m y`), which this catches.
 
-Fails closed (assumes it might be a commit) on a quoting error we can't
-parse — a false positive here costs an unnecessary check; a false
-negative would let a direct-to-main commit slip past a hook that exists
-specifically to prevent that.
-
 Identifies `commit` by *subcommand position*: the first non-option token
 after `git`, skipping global options that consume a following value
 token. An earlier version checked for a `commit` token appearing

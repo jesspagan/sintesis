@@ -10,7 +10,7 @@ Research memo, 2026-07-11 (expanded same day). Companion to [claude-code-orchest
 
 **how to apply:** consult before writing or reviewing any SKILL.md — especially when deciding what goes in the body vs. a bundled reference file, whether a skill's scope has drifted too wide, or whether a skill needs splitting.
 
-**Token-efficiency framing (per [token-usage-optimization](./token-usage-optimization.md) checklist item 8):** conservation-first throughout — no quality-budget tension to reconcile here, unlike the research-orchestration memo.
+**Token-efficiency framing (per [token-usage-optimization](./token-usage-optimization.md)'s overall thesis):** conservation-first throughout — no quality-budget tension to reconcile here, unlike the research-orchestration memo.
 
 ## TL;DR
 

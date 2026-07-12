@@ -10,6 +10,14 @@ or prevent the commit itself, since it already happened by the time
 PostToolUse fires — the only remedy is a nag toward `git commit --amend`,
 not a block on the action.
 
+`invokes_git_commit` only tells us the command *attempted* a commit, not
+that one was actually created — `git commit` exits non-zero and creates
+nothing on a clean tree ("nothing to commit"), untracked-only changes
+("nothing added to commit"), or unstaged-only changes ("no changes added
+to commit"). Without checking for these, this hook would lint whatever
+commit HEAD already pointed to — a stale, unrelated prior commit — not
+the (nonexistent) one this invocation was trying to make.
+
 Resolves the target repo via the payload's `cwd` rather than the hook
 process's own cwd, which isn't guaranteed to match."""
 import json
@@ -23,12 +31,22 @@ from _git_commit_detect import invokes_git_commit
 SUBJECT_MAX = 72
 BODY_LINE_MAX = 3
 BODY_CHAR_MAX = 400
+NO_OP_MARKERS = (
+    "nothing to commit",
+    "nothing added to commit",
+    "no changes added to commit",
+)
 
 data = json.load(sys.stdin)
 command = data.get("tool_input", {}).get("command", "")
 cwd = data.get("cwd") or "."
 
 if not invokes_git_commit(command):
+    sys.exit(0)
+
+response = data.get("tool_response", {}) or {}
+output = (response.get("stdout") or "") + (response.get("stderr") or "")
+if any(marker in output for marker in NO_OP_MARKERS):
     sys.exit(0)
 
 
