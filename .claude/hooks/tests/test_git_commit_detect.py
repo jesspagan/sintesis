@@ -97,6 +97,18 @@ CASES = [
     ("git commit -m x\necho done", True, "real commit on line 1, unrelated line 2"),
     ("echo hi\n\ngit commit -m x", True, "blank line between — consecutive newlines group into one token"),
     ('git commit -m "line one\nline two"', True, "a literal newline INSIDE a quoted string must stay part of that token, not become a separator"),
+
+    # subshell/grouping parens (PR #2 review: '(' and ')' are in
+    # punctuation_chars for redirection support, so a leading '(' became
+    # prog and matched nothing — a complete bypass, same shape as the
+    # unwrapped-wrapper-command bug)
+    ("(git commit -m x)", True, "single subshell wrapping a real commit"),
+    ("((git commit -m x))", True, "nested subshell — consecutive parens group into one token"),
+    ("(echo hi)", False, "subshell, no real commit inside"),
+    ("(git commit -m x; git push)", True, "compound command inside a subshell"),
+    ("(sudo git commit -m x)", True, "wrapper command inside a subshell"),
+    ("git commit -m x > /dev/null", True, "redirection token must not break detection of a real commit"),
+    ("git log > /dev/null", False, "redirection, no real commit"),
 ]
 
 

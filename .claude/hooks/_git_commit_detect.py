@@ -70,6 +70,16 @@ this isn't an exhaustive model of each wrapper's full option grammar
 documented gap rather than either an exhaustive parser or the previous
 complete miss.
 
+Also unwraps leading subshell parens (`(git commit -m x)`), found by
+review after the wrapper-command fix above shipped: `(`/`)` are in
+`punctuation_chars` (needed for `<`/`>` redirection tokens to split
+cleanly), so a leading `(` became `prog` and matched nothing — the same
+complete-bypass shape as the unwrapped-wrapper-command bug, just for
+grouping syntax instead of a command name. Consecutive parens group into
+one token the same way repeated newlines do, so this checks token
+*composition* (all `(`/`)` characters), not membership in a small
+literal set.
+
 This is the *only* thing that should decide whether a Bash command
 invokes `git commit` — settings.json intentionally does not gate these
 hooks with a harness-level `if` pattern, since that pattern is a blunt
@@ -89,10 +99,21 @@ WRAPPER_VALUE_TAKING_FLAGS = {"-u", "-g", "-C", "-p", "-r", "-t", "-h"}
 ASSIGNMENT_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*=")
 
 
+def _is_grouping(tok):
+    # subshell parens — a token made up entirely of '(' / ')'. Consecutive
+    # parens group into one token the same way '&&' or repeated newlines
+    # do (e.g. "((" for a nested subshell), so this checks composition,
+    # not exact-string membership in a small set.
+    return tok != "" and tok.strip("()") == ""
+
+
 def _unwrap(tokens):
     i = 0
     while i < len(tokens):
         tok = tokens[i]
+        if _is_grouping(tok):
+            i += 1
+            continue
         if ASSIGNMENT_RE.match(tok):
             i += 1
             continue
