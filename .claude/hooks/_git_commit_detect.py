@@ -14,18 +14,23 @@ parse — a false positive here costs an unnecessary check; a false
 negative would let a direct-to-main commit slip past a hook that exists
 specifically to prevent that.
 
-Checks for a literal `commit` token anywhere after `git`, excluding help
-requests (`-h`/`--help` anywhere, or `help` as the first word) — this is
-deliberately *not* a subcommand-position parser (identify the first
-non-option token after skipping known value-taking global options):
-that approach needs an exhaustive list of which global options consume a
-following token (`-c`/`-C`, but also `--git-dir`, `--work-tree`,
-`--namespace`, `--config-env`, ...) and missed real commits through any
-option not on the list. Token-containment doesn't care what precedes
-`commit`, so it handles every global option without enumerating them —
-its own false-positive edge case (e.g. `git stash -m commit`, a stash
-message that happens to be the word "commit") is an acceptable trade:
-an unneeded check costs nothing, a missed real commit defeats the hook.
+Identifies `commit` by *subcommand position*: the first non-option token
+after `git`, skipping global options that consume a following value
+token. An earlier version checked for a `commit` token appearing
+anywhere after `git`, which avoided needing to enumerate global options
+but caused real false positives on commands like `git show commit` or
+`git diff commit` (using "commit" as a ref/argument to a different
+subcommand) — a false block on `main` for a command that was never
+actually going to commit. Subcommand-position is the more precise
+signal; VALUE_TAKING_GLOBAL_OPTS is git's own documented set of global
+options that take a separate-token value (`git --help`, OPTIONS
+section) — `--exec-path` is deliberately excluded since it only accepts
+an inline `=value` form, never a separate token.
+
+Fails closed (assumes it might be a commit) on a quoting error we can't
+parse — a false positive here costs an unnecessary check; a false
+negative would let a direct-to-main commit slip past a hook that exists
+specifically to prevent that.
 
 This is the *only* thing that should decide whether a Bash command
 invokes `git commit` — settings.json intentionally does not gate these
@@ -35,6 +40,25 @@ doesn't fire, the script never runs at all."""
 import shlex
 
 OPERATORS = {"&&", "||", ";", "|"}
+VALUE_TAKING_GLOBAL_OPTS = {
+    "-C", "-c",
+    "--config-env", "--git-dir", "--work-tree", "--namespace",
+    "--list-cmds", "--attr-source",
+}
+
+
+def _subcommand(tokens):
+    i = 0
+    while i < len(tokens):
+        tok = tokens[i]
+        if tok in VALUE_TAKING_GLOBAL_OPTS:
+            i += 2  # this option and its separate-token value
+            continue
+        if tok.startswith("-"):
+            i += 1  # a bare flag, or a long option using inline --foo=bar form
+            continue
+        return tok
+    return None
 
 
 def invokes_git_commit(cmd):
@@ -57,9 +81,8 @@ def invokes_git_commit(cmd):
         if prog != "git" and not prog.endswith("/git"):
             continue
         rest = seg[1:]
-        if "commit" not in rest:
+        if "-h" in rest or "--help" in rest:
             continue
-        if "-h" in rest or "--help" in rest or (rest and rest[0] == "help"):
-            continue
-        return True
+        if _subcommand(rest) == "commit":
+            return True
     return False
