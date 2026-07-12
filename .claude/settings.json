@@ -17,8 +17,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/check-agents-index.sh",
-            "if": "Edit(AGENTS.md)|MultiEdit(AGENTS.md)|Write(AGENTS.md)"
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/check-agents-index.py"
           }
         ]
       },
