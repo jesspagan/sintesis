@@ -2,12 +2,21 @@
 check-commit-message.py — kept in one place after Copilot review caught
 the two scripts' copies drifting out of sync.
 
-Tokenizes the whole command once via shlex (respecting quotes), then
-splits into segments on operator *tokens* (`&&`/`||`/`;`/`|`) rather than
-a raw string split, which could otherwise cut inside a quoted commit
-message containing one of those characters. A plain `git\\s+commit` regex
-also misses global options between `git` and the subcommand
-(`git -c user.email=x commit -m y`), which this catches.
+Tokenizes the whole command once via a punctuation-aware shlex lexer
+(`punctuation_chars=True`), then splits into segments on operator
+*tokens* (`&&`/`||`/`;`/`|`), rather than a raw string split that could
+cut inside a quoted commit message containing one of those characters.
+Plain `shlex.split()` — no `punctuation_chars` — was tried first and
+doesn't actually solve that problem: it only splits operators that are
+already whitespace-separated, so `echo hi;git commit -m x` (real,
+common, unspaced shell syntax) tokenizes to a single glued token
+`'hi;git'` and evades detection entirely — not a false positive/negative
+tuning issue, a complete bypass. `punctuation_chars=True` splits `;`/
+`&`/`|` into their own tokens regardless of surrounding whitespace,
+while still correctly keeping them as literal text when they appear
+inside quotes. A plain `git\\s+commit` regex also misses global options
+between `git` and the subcommand (`git -c user.email=x commit -m y`),
+which this catches too.
 
 Identifies `commit` by *subcommand position*: the first non-option token
 after `git`, skipping global options that consume a following value
@@ -88,9 +97,15 @@ def _subcommand(tokens):
     return None
 
 
+def _tokenize(cmd):
+    lexer = shlex.shlex(cmd, posix=True, punctuation_chars=True)
+    lexer.whitespace_split = True
+    return list(lexer)
+
+
 def invokes_git_commit(cmd):
     try:
-        tokens = shlex.split(cmd)
+        tokens = _tokenize(cmd)
     except ValueError:
         return False
 
