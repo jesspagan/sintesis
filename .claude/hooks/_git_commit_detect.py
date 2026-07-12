@@ -4,8 +4,11 @@ the two scripts' copies drifting out of sync.
 
 Tokenizes the whole command once via a punctuation-aware shlex lexer
 (`punctuation_chars=True`), then splits into segments on operator
-*tokens* (`&&`/`||`/`;`/`|`), rather than a raw string split that could
-cut inside a quoted commit message containing one of those characters.
+*tokens* — the same separator set Claude Code's own permission-rule
+matcher documents (`&&`, `||`, `;`, `|`, `|&`, `&`, and newlines; newlines
+are handled implicitly since shlex treats them as whitespace) — rather
+than a raw string split that could cut inside a quoted commit message
+containing one of those characters.
 Plain `shlex.split()` — no `punctuation_chars` — was tried first and
 doesn't actually solve that problem: it only splits operators that are
 already whitespace-separated, so `echo hi;git commit -m x` (real,
@@ -65,7 +68,7 @@ doesn't fire, the script never runs at all."""
 import re
 import shlex
 
-OPERATORS = {"&&", "||", ";", "|", "&"}
+OPERATORS = {"&&", "||", ";", "|", "|&", "&"}
 VALUE_TAKING_GLOBAL_OPTS = {
     "-C", "-c",
     "--config-env", "--git-dir", "--work-tree", "--namespace",
