@@ -1,6 +1,14 @@
+---
+name: agentic-research-orchestration
+description: Architecting agentic research pipelines — orchestrator-worker patterns, depth calibration, validation techniques
+type: research
+---
+
 # Agentic Research Orchestration
 
 Prepared 2026-07-11. Compiled from a background research pass across Anthropic's multi-agent research system writeup, GPT-Researcher, Stanford STORM, and OpenAI's Deep Research system card. Rendered version: https://claude.ai/code/artifact/2db24044-32eb-40d8-8baa-def9d2b7efb5
+
+**how to apply:** consult when designing, evaluating, or discussing an agentic research/orchestration system.
 
 ## 1. Orchestration architectures
 
@@ -70,6 +78,14 @@ STORM is the outlier worth naming separately: it front-loads "identify key sourc
 **Depth calibration rule**: classify query complexity at plan time into 3 tiers (simple/comparison/complex → 1 agent·3–10 calls / 2–4 agents·10–15 calls / 10+ agents) as a budget ceiling, but don't just run the budget out — add a live diminishing-returns check where each new subagent's findings are diffed against what's already known, and truncate early once new subagents stop contributing novel information. Bias uncertain/contested subtopics toward the higher tier regardless of overall query classification.
 
 **Validation step**: run citation/fact-checking as a separate, dedicated pass after the research loop closes (citation-mapping agent), backed by a cross-source corroboration check during research (flag single-source claims as lower-confidence) and explicit contradiction-surfacing rather than silent resolution for anything contested. Evaluate the whole pipeline with an LLM-judge rubric (factual accuracy, citation accuracy, completeness, source quality) on a small (~20) query set early, but keep a human-in-the-loop spot-check — that's where source-selection bias and hallucinations actually get caught.
+
+## 6. Token efficiency: quality budget vs. conservation
+
+This memo treats token spend as a **quality/latency budget to calibrate**, not a quantity to minimize — the default recommendation (orchestrator-worker, ~15× a single chat turn) is justified by hard published quality/latency gains, tempered only by the diminishing-returns cutoff and tiered budgets in §3, not by a conservation goal.
+
+That's a different objective from [token-usage-optimization](./token-usage-optimization.md), the standing preference to conserve *personal Claude Code plan usage*. The two aren't contradictory — this memo is scoped to architecting a dedicated research product/pipeline (e.g., building a research agent as a deliverable), where token cost is a line item traded against output quality for an end user of that product. It is not directly a playbook for how *I* (Claude Code, in this session) should research something for you.
+
+**Reconciliation when applying this memo's ideas inside a Claude Code session** (rather than building a standalone research system): default toward the cheaper end of these patterns — single-agent ReAct or a couple of forked subagents rather than defaulting straight to 10+-subagent orchestrator-worker — and lean harder on the diminishing-returns cutoff to stop early. Reserve the full multi-agent architecture for when the task genuinely is "build/operate a research pipeline," where the quality gains are the point.
 
 ## Sources
 
