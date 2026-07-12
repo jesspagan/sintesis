@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
-"""PostToolUse hook: fires after `git commit`. Reads the actual committed
-message back via `git log` (reliable — the real final text, not the
-fragile shell-invocation string) and flags it if it blows the ceiling
-stated in CLAUDE.md. Exit 2 does interrupt the current turn (the agent
-must act on the stderr feedback before continuing) but can't undo or
-prevent the commit itself, since it already happened by the time
+"""PostToolUse hook: fires after every Bash call (not gated by a harness
+`if` filter — see _git_commit_detect.py for why), self-filters on whether
+the command actually invoked `git commit`, then reads the actual
+committed message back via `git log` (reliable — the real final text,
+not the fragile shell-invocation string) and flags it if it blows the
+ceiling stated in CLAUDE.md. Exit 2 does interrupt the current turn (the
+agent must act on the stderr feedback before continuing) but can't undo
+or prevent the commit itself, since it already happened by the time
 PostToolUse fires — the only remedy is a nag toward `git commit --amend`,
 not a block on the action.
 
@@ -13,13 +15,21 @@ process's own cwd, which isn't guaranteed to match."""
 import json
 import subprocess
 import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent))
+from _git_commit_detect import invokes_git_commit
 
 SUBJECT_MAX = 72
 BODY_LINE_MAX = 3
 BODY_CHAR_MAX = 400
 
 data = json.load(sys.stdin)
+command = data.get("tool_input", {}).get("command", "")
 cwd = data.get("cwd") or "."
+
+if not invokes_git_commit(command):
+    sys.exit(0)
 
 
 def git_log(fmt):
