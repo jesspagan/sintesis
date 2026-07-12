@@ -9,12 +9,17 @@ Reads the tool-call JSON from stdin rather than trusting the harness's own
 than the hook process's own cwd, which isn't guaranteed to match the
 target repo.
 
-Detects a real `git commit` invocation via shlex tokenization rather than
-a regex, so `git -c user.email=x commit -m y` (global options between
-`git` and the subcommand) is still caught — a plain `git\s+commit` regex
-misses it."""
+Detects a real `git commit` invocation via a single shlex tokenization of
+the whole command, splitting into segments on operator *tokens*
+(`&&`/`||`/`;`/`|`) rather than a raw string split — a string-level split
+would cut inside quotes (e.g. a commit message containing `|`), and a
+plain `git\s+commit` regex misses global options between `git` and the
+subcommand (`git -c user.email=x commit -m y`). On a quoting error we
+can't parse, fail closed (assume it might be a commit) rather than
+silently skipping — this hook is meant to enforce a hard policy, and a
+false positive (an unnecessary branch check) is a much smaller cost than
+a missed direct-to-main commit."""
 import json
-import re
 import shlex
 import subprocess
 import sys
@@ -23,17 +28,27 @@ data = json.load(sys.stdin)
 command = data.get("tool_input", {}).get("command", "")
 cwd = data.get("cwd") or "."
 
+OPERATORS = {"&&", "||", ";", "|"}
+
 
 def invokes_git_commit(cmd):
-    for segment in re.split(r"&&|\|\||;|\n|\|", cmd):
-        try:
-            tokens = shlex.split(segment)
-        except ValueError:
+    try:
+        tokens = shlex.split(cmd)
+    except ValueError:
+        return True  # fail closed: unparseable, don't assume it's safe
+
+    segments = [[]]
+    for tok in tokens:
+        if tok in OPERATORS:
+            segments.append([])
+        else:
+            segments[-1].append(tok)
+
+    for seg in segments:
+        if not seg:
             continue
-        if not tokens:
-            continue
-        prog = tokens[0]
-        if (prog == "git" or prog.endswith("/git")) and "commit" in tokens[1:]:
+        prog = seg[0]
+        if (prog == "git" or prog.endswith("/git")) and "commit" in seg[1:]:
             return True
     return False
 

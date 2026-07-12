@@ -44,7 +44,7 @@ if len(subject) > SUBJECT_MAX:
     print(f"Commit subject is {len(subject)} chars (budget {SUBJECT_MAX}): {subject}", file=sys.stderr)
     fail = True
 
-body_lines = len([l for l in body.splitlines() if l.strip()])
+body_lines = len(body.splitlines())  # count all lines, blank ones included — a hard ceiling shouldn't be bypassable by padding with blank lines
 body_chars = len(body)
 if body_lines > BODY_LINE_MAX or body_chars > BODY_CHAR_MAX:
     print(f"Commit body is {body_lines} lines / {body_chars} chars (budget {BODY_LINE_MAX} lines / {BODY_CHAR_MAX} chars).", file=sys.stderr)
