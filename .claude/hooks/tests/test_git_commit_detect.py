@@ -5,7 +5,7 @@ Every case here was found the hard way, across sixteen rounds of PR
 review on the branch that introduced this file, plus two cases (help-
 exclusion edge, `|&` operator) found afterward by actually reading
 Claude Code's own permissions documentation instead of waiting for a
-seventeenth round. Run directly: `python3 test_git_commit_detect.py`.
+seventeenth round. Run from the repo root: `python3 .claude/hooks/tests/test_git_commit_detect.py`.
 
 This does not test the harness-level `"if"` matcher — Claude Code's own
 docs state that mechanism is best-effort and explicitly not meant for
@@ -86,6 +86,17 @@ CASES = [
     ("sudo -u root -H git commit -m x", True, "value-taking then bare wrapper flag together"),
     ("env -i FOO=bar git commit -m x", True, "env -i plus assignment"),
     ("nice sudo -u root git commit -m x", True, "nested wrappers"),
+
+    # newlines as separators (PR #2 review: an earlier docstring claimed
+    # this "just worked" via shlex whitespace handling — it didn't; shlex
+    # discards newlines instead of emitting them as a token, so a
+    # multi-line command silently merged into one segment and evaded
+    # detection entirely if 'git' wasn't the very first word)
+    ("echo hi\ngit commit -m x", True, "real commit on line 2, not line 1"),
+    ("echo hi\necho bye", False, "multi-line, but no real commit anywhere"),
+    ("git commit -m x\necho done", True, "real commit on line 1, unrelated line 2"),
+    ("echo hi\n\ngit commit -m x", True, "blank line between — consecutive newlines group into one token"),
+    ('git commit -m "line one\nline two"', True, "a literal newline INSIDE a quoted string must stay part of that token, not become a separator"),
 ]
 
 

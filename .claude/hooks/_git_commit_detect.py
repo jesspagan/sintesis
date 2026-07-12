@@ -2,13 +2,23 @@
 check-commit-message.py — kept in one place after Copilot review caught
 the two scripts' copies drifting out of sync.
 
-Tokenizes the whole command once via a punctuation-aware shlex lexer
-(`punctuation_chars=True`), then splits into segments on operator
-*tokens* — the same separator set Claude Code's own permission-rule
-matcher documents (`&&`, `||`, `;`, `|`, `|&`, `&`, and newlines; newlines
-are handled implicitly since shlex treats them as whitespace) — rather
-than a raw string split that could cut inside a quoted commit message
-containing one of those characters.
+Tokenizes the whole command once via a punctuation-aware shlex lexer,
+then splits into segments on operator *tokens* — the same separator set
+Claude Code's own permission-rule matcher documents (`&&`, `||`, `;`,
+`|`, `|&`, `&`, and newlines) — rather than a raw string split that
+could cut inside a quoted commit message containing one of those
+characters. An earlier version claimed newlines were "handled implicitly
+since shlex treats them as whitespace" — that was wrong, caught by
+review, not by testing: shlex's default whitespace handling *discards*
+newlines rather than emitting them as a token the segment-splitter could
+see, so a multi-line compound command (`echo hi\ngit commit -m x` — the
+dominant shape of command this session writes) silently merged into one
+segment and evaded detection entirely, the same class of complete bypass
+as the unspaced-operator bug two rounds earlier. Newline is now moved
+from `whitespace` into `punctuation_chars` explicitly so it's emitted as
+its own token; consecutive newlines (blank lines) group into a single
+multi-character token the same way `&&` does, so the operator check
+matches any token that's entirely newlines, not just the literal `"\n"`.
 Plain `shlex.split()` — no `punctuation_chars` — was tried first and
 doesn't actually solve that problem: it only splits operators that are
 already whitespace-separated, so `echo hi;git commit -m x` (real,
@@ -113,9 +123,14 @@ def _subcommand(tokens):
 
 
 def _tokenize(cmd):
-    lexer = shlex.shlex(cmd, posix=True, punctuation_chars=True)
+    lexer = shlex.shlex(cmd, posix=True, punctuation_chars="();<>|&\n")
     lexer.whitespace_split = True
+    lexer.whitespace = lexer.whitespace.replace("\n", "")
     return list(lexer)
+
+
+def _is_separator(tok):
+    return tok in OPERATORS or (tok != "" and tok.strip("\n") == "")
 
 
 def invokes_git_commit(cmd):
@@ -126,7 +141,7 @@ def invokes_git_commit(cmd):
 
     segments = [[]]
     for tok in tokens:
-        if tok in OPERATORS:
+        if _is_separator(tok):
             segments.append([])
         else:
             segments[-1].append(tok)
