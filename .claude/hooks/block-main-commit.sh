@@ -31,7 +31,7 @@ except (subprocess.CalledProcessError, FileNotFoundError):
 branch = result.stdout.strip()
 if branch in ("main", "master"):
     print(f"Blocked: direct commit to '{branch}' isn't allowed in this repo.", file=sys.stderr)
-    print("Create/switch to a feature branch first, e.g.: git checkout -b <descriptive-branch-name>", file=sys.stderr)
+    print("Create/switch to a feature branch first, e.g.: git checkout -b <type>/<slug> (type: feat/fix/docs/chore — see CLAUDE.md)", file=sys.stderr)
     sys.exit(2)
 
 sys.exit(0)

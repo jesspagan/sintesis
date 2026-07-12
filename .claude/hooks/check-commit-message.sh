@@ -2,9 +2,11 @@
 """PostToolUse hook: fires after `git commit`. Reads the actual committed
 message back via `git log` (reliable — the real final text, not the
 fragile shell-invocation string) and flags it if it blows the ceiling
-stated in CLAUDE.md. Can't undo the commit (already happened by the time
-PostToolUse fires) — this is a nag toward `git commit --amend`, not a
-block.
+stated in CLAUDE.md. Exit 2 does interrupt the current turn (the agent
+must act on the stderr feedback before continuing) but can't undo or
+prevent the commit itself, since it already happened by the time
+PostToolUse fires — the only remedy is a nag toward `git commit --amend`,
+not a block on the action.
 
 Resolves the target repo via the payload's `cwd` rather than the hook
 process's own cwd, which isn't guaranteed to match."""

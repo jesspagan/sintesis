@@ -8,7 +8,7 @@ The point of this skill is doing the research well, not filing the paperwork aft
 
 ## 1. Pick a strategy for the topic type
 
-See [agentic-research-orchestration](../../research/agentic-research-orchestration.md) §2 for the full mapping. Don't default to one approach for every topic:
+See [agentic-research-orchestration](../../../research/agentic-research-orchestration.md) §2 for the full mapping. Don't default to one approach for every topic:
 - **Narrow factual lookup** — single agent, a handful of tool calls, no subagent spawn.
 - **Broad survey** — decompose into sub-questions, parallelize across subagents/forks, synthesize.
 - **Contested topic** — deliberately pull from sources that disagree; don't stop at the first source that confirms an answer.
@@ -17,11 +17,11 @@ See [agentic-research-orchestration](../../research/agentic-research-orchestrati
 
 ## 2. Calibrate depth
 
-Use a tiered budget and a diminishing-returns check (§2 of the same memo): stop adding sources once new ones stop changing the conclusion, not once you've exhausted search results. More tool calls isn't automatically better — see [token-usage-optimization](../../research/token-usage-optimization.md) for the cost side of this tradeoff.
+Use a tiered budget and a diminishing-returns check (§2 of the same memo): stop adding sources once new ones stop changing the conclusion, not once you've exhausted search results. More tool calls isn't automatically better — see [token-usage-optimization](../../../research/token-usage-optimization.md) for the cost side of this tradeoff.
 
 ## 3. Isolate the noisy part
 
-This skill already runs forked (`context: fork`), so the main thread never sees the search/fetch noise by default — only the finished memo comes back. If the topic is broad enough to split into independent sub-questions, fork further from inside here (nested subagents) and have each report back synthesized findings with citations, not raw transcripts — see [claude-code-orchestration-primitives](../../research/claude-code-orchestration-primitives.md).
+This skill already runs forked (`context: fork`), so the main thread never sees the search/fetch noise by default — only the finished memo comes back. If the topic is broad enough to split into independent sub-questions, fork further from inside here (nested subagents) and have each report back synthesized findings with citations, not raw transcripts — see [claude-code-orchestration-primitives](../../../research/claude-code-orchestration-primitives.md).
 
 ## 4. Validate before writing anything down
 
