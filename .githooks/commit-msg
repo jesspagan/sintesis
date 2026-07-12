@@ -1,0 +1,54 @@
+#!/usr/bin/env python3
+"""Native git commit-msg hook: enforces the subject/body ceiling stated
+in CLAUDE.md (subject <=72 chars, body <=3 lines / ~400 chars).
+
+Replaces .claude/hooks/check-commit-message.py, which could only nag
+toward `git commit --amend` after the fact (a PostToolUse Claude Code
+hook fires after the commit already exists, and can't undo it). git's
+commit-msg hook receives the drafted message before the commit is
+finalized and can reject it outright — a real block, not a nag, and one
+more piece of the shell-text-parsing detector this PR retires: this
+hook needs no opinion at all about how the commit was invoked, only the
+message git is about to record, which git hands it directly."""
+import sys
+
+SUBJECT_MAX = 72
+BODY_LINE_MAX = 3
+BODY_CHAR_MAX = 400
+
+
+def main(msg_path):
+    with open(msg_path) as f:
+        lines = f.read().splitlines()
+
+    # strip git's own comment lines (from `git commit -v`/templates), same
+    # convention git itself uses when parsing the file
+    lines = [l for l in lines if not l.startswith("#")]
+
+    subject = lines[0] if lines else ""
+    body_lines = lines[1:]
+    if body_lines and body_lines[0] == "":
+        body_lines = body_lines[1:]  # skip the blank separator line
+    body = "\n".join(body_lines)
+
+    fail = False
+
+    if len(subject) > SUBJECT_MAX:
+        print(f"Commit subject is {len(subject)} chars (budget {SUBJECT_MAX}): {subject}", file=sys.stderr)
+        fail = True
+
+    body_line_count = len(body_lines)
+    body_char_count = len(body)
+    if body_line_count > BODY_LINE_MAX or body_char_count > BODY_CHAR_MAX:
+        print(f"Commit body is {body_line_count} lines / {body_char_count} chars (budget {BODY_LINE_MAX} lines / {BODY_CHAR_MAX} chars).", file=sys.stderr)
+        fail = True
+
+    if fail:
+        print("Rewrite the commit message to fit the budget — see CLAUDE.md's commit message format section.", file=sys.stderr)
+        return 1
+
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1]))
