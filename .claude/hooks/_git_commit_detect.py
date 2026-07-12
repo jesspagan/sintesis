@@ -14,14 +14,18 @@ parse — a false positive here costs an unnecessary check; a false
 negative would let a direct-to-main commit slip past a hook that exists
 specifically to prevent that.
 
-Identifies `commit` by its *subcommand position* (the first non-option
-token after `git`, skipping value-taking global options like `-c`/`-C`),
-not by checking whether the word appears anywhere in the tokens — the
-naive version misfired on `git help commit` (subcommand is `help`,
-`commit` is help's argument) and `git --help commit` (a help request,
-not an actual commit). Also excludes any segment with `-h`/`--help`
-anywhere in it, since `git commit --help` shows help rather than
-committing.
+Checks for a literal `commit` token anywhere after `git`, excluding help
+requests (`-h`/`--help` anywhere, or `help` as the first word) — this is
+deliberately *not* a subcommand-position parser (identify the first
+non-option token after skipping known value-taking global options):
+that approach needs an exhaustive list of which global options consume a
+following token (`-c`/`-C`, but also `--git-dir`, `--work-tree`,
+`--namespace`, `--config-env`, ...) and missed real commits through any
+option not on the list. Token-containment doesn't care what precedes
+`commit`, so it handles every global option without enumerating them —
+its own false-positive edge case (e.g. `git stash -m commit`, a stash
+message that happens to be the word "commit") is an acceptable trade:
+an unneeded check costs nothing, a missed real commit defeats the hook.
 
 This is the *only* thing that should decide whether a Bash command
 invokes `git commit` — settings.json intentionally does not gate these
@@ -31,21 +35,6 @@ doesn't fire, the script never runs at all."""
 import shlex
 
 OPERATORS = {"&&", "||", ";", "|"}
-VALUE_TAKING_OPTS = {"-c", "-C"}
-
-
-def _subcommand(tokens):
-    i = 0
-    while i < len(tokens):
-        tok = tokens[i]
-        if tok in VALUE_TAKING_OPTS:
-            i += 2
-            continue
-        if tok.startswith("-"):
-            i += 1
-            continue
-        return tok
-    return None
 
 
 def invokes_git_commit(cmd):
@@ -68,8 +57,9 @@ def invokes_git_commit(cmd):
         if prog != "git" and not prog.endswith("/git"):
             continue
         rest = seg[1:]
-        if "-h" in rest or "--help" in rest:
+        if "commit" not in rest:
             continue
-        if _subcommand(rest) == "commit":
-            return True
+        if "-h" in rest or "--help" in rest or (rest and rest[0] == "help"):
+            continue
+        return True
     return False

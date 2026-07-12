@@ -16,7 +16,7 @@ The bottleneck moved. Code generation got cheap; verification didn't. Addy Osman
 
 ## 2. This repo's state as of this memo (2026-07-11)
 
-At the time of writing, `sintesis` had no `CLAUDE.md` (root or otherwise) and no `.claude/settings.json` hooks — the file existed but only set `theme`/`tui`. The only project-authored skill was `research` (`.claude/skills/research/SKILL.md`). There was no repo-local `code-review`, `verify`, `simplify`, or `security-review` skill file anywhere under this repo's `.claude/`. (See [hooks-and-harnesses](./hooks-and-harnesses.md) and `CLAUDE.md` for what this repo's process looks like as it evolves — check those against the actual current `.claude/` contents rather than assuming this snapshot still holds.)
+At the time of writing, none of this had ever been committed to `main`: no `CLAUDE.md`, no `.claude/settings.json`, no repo-local skill files. What existed was an *uncommitted* working tree from an earlier session — a `.claude/settings.json` setting only `theme`/`tui`, and a `research` skill (`.claude/skills/research/SKILL.md`) — neither present in `main`'s actual git history. There was no repo-local `code-review`, `verify`, `simplify`, or `security-review` skill file anywhere under this repo's `.claude/`, committed or not. (See [hooks-and-harnesses](./hooks-and-harnesses.md) and `CLAUDE.md` for what this repo's process looks like as it evolves — check those against the actual current `.claude/` contents rather than assuming this snapshot still holds.)
 
 What *is* available when this session runs `/code-review`, `/verify`, `/simplify`, or `/security-review` comes from globally-installed Claude Code plugins, not this repo:
 
