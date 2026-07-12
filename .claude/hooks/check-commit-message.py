@@ -11,18 +11,26 @@ PostToolUse fires — the only remedy is a nag toward `git commit --amend`,
 not a block on the action.
 
 `invokes_git_commit` only tells us the command *attempted* a commit, not
-that one was actually created — `git commit` exits non-zero and creates
-nothing on a clean tree ("nothing to commit"), untracked-only changes
-("nothing added to commit"), or unstaged-only changes ("no changes added
-to commit"). Without checking for these, this hook would lint whatever
-commit HEAD already pointed to — a stale, unrelated prior commit — not
-the (nonexistent) one this invocation was trying to make.
+that one was actually created. A standalone failing `git commit` (clean
+tree, pre-commit hook rejection, aborted editor, ...) makes the overall
+Bash tool call report non-zero, and PostToolUse simply never fires for a
+non-zero Bash result (confirmed empirically) — so that case doesn't reach
+this hook at all. But a *compound* command like `git commit -m x; echo
+done` still reports overall success even if the commit inside it failed,
+which is exactly the shape of command this session writes constantly.
+Text-matching git's own failure messages ("nothing to commit", etc.) was
+tried first and rejected — it only covers the specific wordings checked
+for, missing e.g. pre-commit hook rejection or an aborted editor. Instead
+this checks whether HEAD's commit is actually *fresh* (created within the
+last minute): any failure mode leaves HEAD unmoved, so a stale timestamp
+means nothing was created regardless of why.
 
 Resolves the target repo via the payload's `cwd` rather than the hook
 process's own cwd, which isn't guaranteed to match."""
 import json
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
@@ -31,22 +39,13 @@ from _git_commit_detect import invokes_git_commit
 SUBJECT_MAX = 72
 BODY_LINE_MAX = 3
 BODY_CHAR_MAX = 400
-NO_OP_MARKERS = (
-    "nothing to commit",
-    "nothing added to commit",
-    "no changes added to commit",
-)
+FRESHNESS_WINDOW_SECONDS = 60
 
 data = json.load(sys.stdin)
 command = data.get("tool_input", {}).get("command", "")
 cwd = data.get("cwd") or "."
 
 if not invokes_git_commit(command):
-    sys.exit(0)
-
-response = data.get("tool_response", {}) or {}
-output = (response.get("stdout") or "") + (response.get("stderr") or "")
-if any(marker in output for marker in NO_OP_MARKERS):
     sys.exit(0)
 
 
@@ -64,6 +63,15 @@ def git_log(fmt):
 subject = git_log("%s")
 if subject is None:
     sys.exit(0)
+
+commit_ts = git_log("%ct")
+try:
+    is_fresh = commit_ts is not None and (time.time() - int(commit_ts)) <= FRESHNESS_WINDOW_SECONDS
+except ValueError:
+    is_fresh = False
+if not is_fresh:
+    sys.exit(0)  # HEAD wasn't just moved — this commit attempt didn't actually create one
+
 body = git_log("%b") or ""
 
 fail = False

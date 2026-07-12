@@ -22,10 +22,18 @@ options that take a separate-token value (`git --help`, OPTIONS
 section) — `--exec-path` is deliberately excluded since it only accepts
 an inline `=value` form, never a separate token.
 
-Fails closed (assumes it might be a commit) on a quoting error we can't
-parse — a false positive here costs an unnecessary check; a false
-negative would let a direct-to-main commit slip past a hook that exists
-specifically to prevent that.
+Fails **open** (assumes it's not a commit) on a quoting error we can't
+parse — this reverses an earlier version that failed closed, because the
+tradeoff changed: this function now runs on *every* Bash call in the
+session (settings.json has no harness-level `if` filter — see below), so
+a shlex parse failure is now far more likely to come from some unrelated
+complex command (process substitution, ANSI-C quoting, other bash syntax
+shlex doesn't model) than from a real commit attempt. Failing closed in
+that world means blocking arbitrary unrelated commands on `main` whenever
+they use shell syntax shlex can't parse. Failing open doesn't meaningfully
+open a bypass either: a `git commit` whose shlex parse genuinely fails
+(actual unbalanced quotes) will most likely also fail when bash itself
+tries to run it, so nothing was going to commit anyway.
 
 This is the *only* thing that should decide whether a Bash command
 invokes `git commit` — settings.json intentionally does not gate these
@@ -60,7 +68,7 @@ def invokes_git_commit(cmd):
     try:
         tokens = shlex.split(cmd)
     except ValueError:
-        return True
+        return False
 
     segments = [[]]
     for tok in tokens:
