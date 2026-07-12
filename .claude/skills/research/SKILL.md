@@ -13,7 +13,7 @@ See [agentic-research-orchestration](../../../research/agentic-research-orchestr
 - **Broad survey** — decompose into sub-questions, parallelize across subagents/forks, synthesize.
 - **Contested topic** — deliberately pull from sources that disagree; don't stop at the first source that confirms an answer.
 - **Recency-sensitive** — prioritize freshness over authority; check publication/update dates.
-- **Technical** — ground claims against primary sources over secondhand summaries. For an actively-developed software system (not a historical/theoretical topic), treat "primary source" as three distinct types pulled separately, not one satisfied by touching any single one: vendor documentation, the actual source code where installable/accessible (not documentation *about* the code), and issue-tracker/community-reported content on gaps between documented and actual behavior. Make this checkable in the finished memo: its Sources section should show all three for this category of topic, or say explicitly when one wasn't available (no public source, no active issue tracker) — the same discipline as flagging when sources disagree rather than silently picking one.
+- **Technical** — ground claims in primary sources. For live software, that's docs *and* source code *and* issue-tracker reports, not just docs; list all three in Sources or flag which is missing.
 
 ## 2. Calibrate depth
 
