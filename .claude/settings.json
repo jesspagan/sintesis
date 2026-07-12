@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/block-main-commit.sh"
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/block-main-commit.py"
           }
         ]
       }
@@ -27,7 +27,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/check-commit-message.sh"
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/check-commit-message.py"
           }
         ]
       }
