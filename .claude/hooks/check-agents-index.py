@@ -31,7 +31,12 @@ file_path = data.get("tool_input", {}).get("file_path", "")
 cwd = data.get("cwd") or "."
 
 target = Path(cwd) / "AGENTS.md"
-if not file_path or Path(file_path).resolve() != target.resolve():
+if not file_path:
+    sys.exit(0)
+edited = Path(file_path)
+if not edited.is_absolute():
+    edited = Path(cwd) / edited  # anchor a relative file_path to the payload's cwd, not the hook process's own
+if edited.resolve() != target.resolve():
     sys.exit(0)
 
 if not target.is_file():
