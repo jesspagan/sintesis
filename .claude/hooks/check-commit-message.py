@@ -1,26 +1,29 @@
 #!/usr/bin/env python3
-"""PostToolUse hook: fires after every Bash call (not gated by a harness
-`if` filter — see _git_commit_detect.py for why), self-filters on whether
-the command actually invoked `git commit`, then reads the actual
-committed message back via `git log` (reliable — the real final text,
-not the fragile shell-invocation string) and flags it if it blows the
-ceiling stated in CLAUDE.md. Exit 2 does interrupt the current turn (the
-agent must act on the stderr feedback before continuing) but can't undo
-or prevent the commit itself, since it already happened by the time
-PostToolUse fires — the only remedy is a nag toward `git commit --amend`,
-not a block on the action.
+"""Fires after every Bash call, on both `PostToolUse` and
+`PostToolUseFailure` (not gated by a harness `if` filter — see
+_git_commit_detect.py for why). Wired to both events because `PostToolUse`
+alone doesn't fire when the overall Bash tool call reports non-zero — so
+a compound command like `git commit -m x; git push` would skip this check
+entirely if the push step failed, even though a real commit was made.
+`PostToolUseFailure`'s payload has no `tool_response` field, but this
+script never reads that field, so the same logic runs unchanged under
+either event.
+
+Self-filters on whether the command actually invoked `git commit`, then
+reads the actual committed message back via `git log` (reliable — the
+real final text, not the fragile shell-invocation string) and flags it if
+it blows the ceiling stated in CLAUDE.md. Exit 2 does interrupt the
+current turn (the agent must act on the stderr feedback before
+continuing) but can't undo or prevent the commit itself, since it already
+happened by the time either event fires — the only remedy is a nag
+toward `git commit --amend`, not a block on the action.
 
 `invokes_git_commit` only tells us the command *attempted* a commit, not
-that one was actually created. A standalone failing `git commit` (clean
-tree, pre-commit hook rejection, aborted editor, ...) makes the overall
-Bash tool call report non-zero, and PostToolUse simply never fires for a
-non-zero Bash result (confirmed empirically) — so that case doesn't reach
-this hook at all. But a *compound* command like `git commit -m x; echo
-done` still reports overall success even if the commit inside it failed,
-which is exactly the shape of command this session writes constantly.
-Text-matching git's own failure messages ("nothing to commit", etc.) was
-tried first and rejected — it only covers the specific wordings checked
-for, missing e.g. pre-commit hook rejection or an aborted editor. A fixed
+that one was actually created — a standalone no-op (clean tree,
+pre-commit hook rejection, aborted editor, ...) or a compound command
+where the commit itself failed leaves HEAD unmoved. Text-matching git's
+own failure messages ("nothing to commit", etc.) was tried first and
+rejected — it only covers the specific wordings checked for. A fixed
 freshness window ("HEAD's commit is within the last N seconds") was tried
 next and also rejected: for a slow compound command like `git commit -m
 x; sleep 120`, the commit happens near the *start* of the tool call but
