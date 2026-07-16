@@ -13,7 +13,7 @@ See [agentic-research-orchestration](../../../research/agentic-research-orchestr
 - **Broad survey** — decompose into sub-questions, parallelize across subagents/forks, synthesize.
 - **Contested topic** — deliberately pull from sources that disagree; don't stop at the first source that confirms an answer.
 - **Recency-sensitive** — prioritize freshness over authority; check publication/update dates.
-- **Technical** — ground claims against primary sources (docs, source code) over secondhand summaries.
+- **Technical** — ground claims in primary sources. For live software, that's docs *and* source code *and* issue-tracker reports, not just docs; list all three in Sources or flag which is missing.
 
 ## 2. Calibrate depth
 
@@ -48,5 +48,5 @@ type: research
 ```
 
 1. Write `research/<slug>.md` following the format above. Cross-reference other memos with relative markdown links (`[slug](./slug.md)`), never `[[wikilinks]]`.
-2. Add one line to the `## Index` in `AGENTS.md`, matching the existing entries: `- [<slug>.md](research/<slug>.md) — <what it covers>; <when to consult it>`. Keep the whole line under ~150 characters — the link markup alone eats ~50-80 of those, so the description has to be terser than it feels like it should be. A hook checks this on save; don't rely on it to catch a bloated line for you.
+2. Add one line to the `## Index` in `AGENTS.md`, matching the existing entries: `- [<slug>.md](research/<slug>.md) — <what it covers>; <when to consult it>`. Keep the whole line under ~150 characters — the link markup alone eats ~50-80 of those, so the description has to be terser than it feels like it should be. Check this yourself before finalizing; nothing else in this repo enforces it.
 3. Do not create a `memory/` directory or a per-memo stub file — this repo deliberately keeps one file per memo, not a two-tier index/body split.
