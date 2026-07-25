@@ -1,6 +1,6 @@
 ---
 name: libraries-as-knowledge-institutions
-description: library science (selection, classification, weeding, reference service) as a model for curating an agentic knowledge base
+description: Library science (selection, classification, weeding, reference service) as a model for curating an agentic knowledge base
 type: research
 tags: [knowledge-base, governance]
 ---
