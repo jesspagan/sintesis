@@ -1,6 +1,6 @@
 # sintesis
 
-A repository of research memos — durable findings meant to be consulted when relevant, not read start to finish every session. Each file in `research/` is self-contained: frontmatter (`name`, `description`, `type`, plus optional `tags`/`status`/`supersedes`/`superseded_by` fields — see SKILL.md) plus a `**how to apply:**` line stating when to consult it.
+A repository of research memos — durable findings meant to be consulted when relevant, not read start to finish every session. Each file in `research/` is self-contained: frontmatter (`name`, `description`, `type`, plus optional `tags`/`status`/`supersedes`/`superseded_by` fields — see [SKILL.md](.claude/skills/research/SKILL.md)) plus a `**how to apply:**` line stating when to consult it.
 
 Treat the index as a starting point, not a single-keyword lookup: a question can be relevant to more than one memo, so scan for all plausibly-relevant entries and open each before answering, rather than stopping at the first title match.
 
