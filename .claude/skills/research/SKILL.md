@@ -58,7 +58,7 @@ superseded_by: <optional: slug of memo that replaces this>
 **Optional frontmatter fields**, for filtering once a flat index stops scaling:
 - `tags:` — 0–2 tags from this fixed vocabulary: `orchestration`, `skills`, `hooks`, `commits`, `tokens`, `knowledge-base`, `governance`. Expand this list only when a new memo genuinely doesn't fit any existing tag — don't free-tag; an unmaintained tag set drifts into the same synonymy/noise a folksonomy does.
 - `status:` — omit when active (the default); set to `superseded` only once a successor memo exists and is merged to main.
-- `supersedes` / `superseded_by:` — the other memo's kebab-case `name` (not a path, not a link). Set on **both** memos when marking supersession; never delete or overwrite the superseded memo's content — it stays a citable prior version, git already preserves everything else.
+- `supersedes:` / `superseded_by:` — the other memo's kebab-case `name` (not a path, not a link). Set on **both** memos when marking supersession; never delete or overwrite the superseded memo's content — it stays a citable prior version, git already preserves everything else.
 
 1. Write `research/<slug>.md` following the format above. Cross-reference other memos with relative markdown links (`[slug](./slug.md)`), never `[[wikilinks]]`.
 2. Add one line to the `## Index` in `AGENTS.md`, matching the existing entries: `- [<slug>.md](research/<slug>.md) — <what it covers>; <when to consult it>`. Keep the whole line under ~150 characters — the link markup alone eats ~50-80 of those, so the description has to be terser than it feels like it should be. Check this yourself before finalizing; nothing else in this repo enforces it.
