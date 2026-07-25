@@ -1,6 +1,8 @@
 # sintesis
 
-A repository of research memos — durable findings meant to be consulted when relevant, not read start to finish every session. Each file in `research/` is self-contained: frontmatter (`name`, `description`, `type`) plus a `**how to apply:**` line stating when to consult it.
+A repository of research memos — durable findings meant to be consulted when relevant, not read start to finish every session. Each file in `research/` is self-contained: frontmatter (`name`, `description`, `type`, plus optional `tags`/`status`/`supersedes` fields — see SKILL.md) plus a `**how to apply:**` line stating when to consult it.
+
+Treat the index as a starting point, not a single-keyword lookup: a question can be relevant to more than one memo, so scan for all plausibly-relevant entries and open each before answering, rather than stopping at the first title match.
 
 ## Index
 
@@ -11,3 +13,4 @@ A repository of research memos — durable findings meant to be consulted when r
 - [pre-commit-review-orchestration.md](research/pre-commit-review-orchestration.md) — hooks/review patterns for pre-commit gates; consult when auditing one
 - [hooks-and-harnesses.md](research/hooks-and-harnesses.md) — hook taxonomy, cross-framework comparison, governance landscape; consult when writing/evaluating a hook
 - [agentic-commit-and-pr-verbosity.md](research/agentic-commit-and-pr-verbosity.md) — why agentic commit/PR text runs long; vendor specs and terseness levers
+- [libraries-as-knowledge-institutions.md](research/libraries-as-knowledge-institutions.md) — library science for KB curation; consult when designing one

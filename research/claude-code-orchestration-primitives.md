@@ -2,6 +2,7 @@
 name: claude-code-orchestration-primitives
 description: When to use the main thread vs. a skill vs. an agent/subagent in Claude Code
 type: research
+tags: [orchestration, skills]
 ---
 
 # Main thread vs. skill vs. agent/subagent: when to use which

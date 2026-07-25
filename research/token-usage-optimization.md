@@ -2,6 +2,7 @@
 name: token-usage-optimization
 description: How to conserve Claude Code usage/token limits — playbook for context, delegation, and session hygiene
 type: research
+tags: [tokens]
 ---
 
 # Token Usage Optimization

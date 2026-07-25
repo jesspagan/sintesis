@@ -2,6 +2,7 @@
 name: agentic-research-orchestration
 description: Architecting agentic research pipelines — orchestrator-worker patterns, depth calibration, validation techniques
 type: research
+tags: [orchestration, tokens]
 ---
 
 # Agentic Research Orchestration

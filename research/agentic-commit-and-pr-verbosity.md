@@ -2,6 +2,7 @@
 name: agentic-commit-and-pr-verbosity
 description: Why agentic commit messages and PR descriptions run longer than human ones, what vendors actually specify, and concrete levers to make them terser
 type: research
+tags: [commits]
 ---
 
 # Agentic commit message and PR description verbosity

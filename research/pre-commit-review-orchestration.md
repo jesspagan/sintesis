@@ -2,6 +2,7 @@
 name: pre-commit-review-orchestration
 description: Orchestration patterns and governance for reviewing agent-written code before commit — hooks, subagent review, and industry guidance
 type: research
+tags: [hooks, governance]
 ---
 
 # Pre-commit review orchestration for agentic coding
