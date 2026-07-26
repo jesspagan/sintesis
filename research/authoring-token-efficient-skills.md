@@ -2,6 +2,7 @@
 name: authoring-token-efficient-skills
 description: Writing Claude Agent Skills that are token-efficient, maintainable, and well-scoped
 type: research
+tags: [skills, tokens]
 ---
 
 # Authoring token-efficient, maintainable, well-scoped Skills

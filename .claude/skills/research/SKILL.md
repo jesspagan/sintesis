@@ -27,15 +27,23 @@ This skill already runs forked (`context: fork`), so the main thread never sees 
 
 Per the "validation techniques" section of the orchestration memo: ground every non-obvious claim in a citable source, corroborate across independent sources where the claim matters, and surface contradictions explicitly rather than silently picking one source when sources disagree.
 
+Before persisting, also check the finding against explicit selection criteria, not ad hoc judgment: **authority** (citable, not just plausible), **non-duplication** (does an existing memo already cover this — extend it instead of forking a near-duplicate), **durability** (a standing fact worth future sessions, not session-specific detail), **relevance** (serves this repo's actual use). This doesn't resolve the tradeoff between strict gatekeeping and under-persisting novel, hard-to-corroborate findings — it only makes the decision visible and revisable.
+
 ## 5. Persist the findings
 
 Only after 1–4. Every memo in this repo is a single self-contained file in `research/` — no separate index/stub file, no `[[wikilink]]` syntax. `AGENTS.md` at repo root is the only index; it holds one line per memo, not the content.
+
+Flag claims that rest on secondary/synthesized corroboration (a summary, search-result metadata) rather than a direct primary-source fetch — inline where it matters, or in a closing **Confidence notes:** line. Treat this as expected practice, not optional.
 
 ```
 ---
 name: <kebab-case-slug, matches filename minus .md>
 description: <one line — what the memo covers>
 type: research
+tags: [<optional: 0-2 from the fixed vocabulary below>]
+status: <optional: omit unless superseded>
+supersedes: <optional: slug of memo this replaces>
+superseded_by: <optional: slug of memo that replaces this>
 ---
 
 # <Title>
@@ -46,6 +54,11 @@ type: research
 
 ## <sections as needed>
 ```
+
+**Optional frontmatter fields**, for filtering once a flat index stops scaling:
+- `tags:` — 0–2 tags from this fixed vocabulary: `orchestration`, `skills`, `hooks`, `commits`, `tokens`, `knowledge-base`, `governance`. Expand this list only when a new memo genuinely doesn't fit any existing tag — don't free-tag; an unmaintained tag set drifts into the same synonymy/noise a folksonomy does.
+- `status:` — omit when active (the default); set to `superseded` only once a successor memo exists and is merged to main.
+- `supersedes:` / `superseded_by:` — the other memo's kebab-case `name` (not a path, not a link). Set on **both** memos when marking supersession; never delete or overwrite the superseded memo's content — it stays a citable prior version, git already preserves everything else.
 
 1. Write `research/<slug>.md` following the format above. Cross-reference other memos with relative markdown links (`[slug](./slug.md)`), never `[[wikilinks]]`.
 2. Add one line to the `## Index` in `AGENTS.md`, matching the existing entries: `- [<slug>.md](research/<slug>.md) — <what it covers>; <when to consult it>`. Keep the whole line under ~150 characters — the link markup alone eats ~50-80 of those, so the description has to be terser than it feels like it should be. Check this yourself before finalizing; nothing else in this repo enforces it.

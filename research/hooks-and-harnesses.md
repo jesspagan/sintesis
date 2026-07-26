@@ -2,6 +2,7 @@
 name: hooks-and-harnesses
 description: What "hooks" and "harness" mean in agentic coding systems, hook taxonomy and enforcement model, cross-framework comparison, and the security/governance landscape around them
 type: research
+tags: [hooks, governance]
 ---
 
 # Hooks and harnesses in the agentic economy
