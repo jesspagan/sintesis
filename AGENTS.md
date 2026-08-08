@@ -18,3 +18,4 @@ Self-review the diff against sibling files for register, formatting, and punctua
 - [hooks-and-harnesses.md](research/hooks-and-harnesses.md) — hook taxonomy, cross-framework comparison, governance landscape; consult when writing/evaluating a hook
 - [agentic-commit-and-pr-verbosity.md](research/agentic-commit-and-pr-verbosity.md) — why agentic commit/PR text runs long; vendor specs and terseness levers
 - [libraries-as-knowledge-institutions.md](research/libraries-as-knowledge-institutions.md) — library science for KB curation; consult when designing one
+- [omnichannel-design-systems.md](research/omnichannel-design-systems.md) — tokens, cases, governance for omnichannel design; consult when scoping
