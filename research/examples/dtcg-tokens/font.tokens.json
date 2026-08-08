@@ -1,0 +1,22 @@
+{
+  "$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
+  "font": {
+    "family": {
+      "$type": "fontFamily",
+      "sans": {
+        "$value": ["Inter", "Helvetica", "Arial", "sans-serif"],
+        "$description": "fontFamily accepts either a single string or an ordered fallback array."
+      },
+      "mono": { "$value": "IBM Plex Mono" }
+    },
+    "weight": {
+      "$type": "fontWeight",
+      "regular": { "$value": 400 },
+      "medium": { "$value": 500 },
+      "bold": {
+        "$value": "bold",
+        "$description": "fontWeight accepts a number in [1, 1000] (OpenType wght axis) or one of the spec's reserved weight-name strings (e.g. 700/bold)."
+      }
+    }
+  }
+}

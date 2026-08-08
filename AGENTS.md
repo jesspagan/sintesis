@@ -19,3 +19,4 @@ Self-review the diff against sibling files for register, formatting, and punctua
 - [agentic-commit-and-pr-verbosity.md](research/agentic-commit-and-pr-verbosity.md) — why agentic commit/PR text runs long; vendor specs and terseness levers
 - [libraries-as-knowledge-institutions.md](research/libraries-as-knowledge-institutions.md) — library science for KB curation; consult when designing one
 - [omnichannel-design-systems.md](research/omnichannel-design-systems.md) — tokens, cases, governance for omnichannel design; consult when scoping
+- [dtcg-format-spec.md](research/dtcg-format-spec.md) — DTCG format spec: types, refs, resolver, tool support; consult when building token tooling

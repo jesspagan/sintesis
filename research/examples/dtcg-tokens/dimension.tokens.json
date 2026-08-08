@@ -1,0 +1,19 @@
+{
+  "$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
+  "dimension": {
+    "$description": "Dimension $value is an object with explicit value+unit — a bare number or a unit-suffixed string (e.g. \"16px\") is not valid under the 2025.10 Format Module.",
+    "$type": "dimension",
+    "space": {
+      "0": { "$value": { "value": 0, "unit": "px" } },
+      "100": { "$value": { "value": 4, "unit": "px" } },
+      "200": { "$value": { "value": 8, "unit": "px" } },
+      "400": { "$value": { "value": 16, "unit": "px" } },
+      "800": { "$value": { "value": 32, "unit": "px" } }
+    },
+    "radius": {
+      "sm": { "$value": { "value": 4, "unit": "px" } },
+      "md": { "$value": { "value": 8, "unit": "px" } },
+      "full": { "$value": { "value": 9999, "unit": "px" } }
+    }
+  }
+}
