@@ -2,6 +2,8 @@
 
 ## Getting started
 
+Requires Node.js `^20.19.0 || >=22.12.0` (Vite's minimum).
+
 Run it locally with one command:
 
 ```sh
