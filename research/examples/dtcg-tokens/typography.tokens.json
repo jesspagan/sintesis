@@ -1,0 +1,26 @@
+{
+  "$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
+  "typography": {
+    "$type": "typography",
+    "$description": "Composite type: $value is a fixed object of five sub-values (fontFamily, fontSize, fontWeight, letterSpacing, lineHeight), each either an explicit primitive value or a {reference}. Aliases resolve against the merged token tree, so this file assumes it's built alongside color.tokens.json, dimension.tokens.json, and font.tokens.json rather than in isolation. lineHeight is a bare number (a multiplier of fontSize), not a dimension — this is the one sub-value still contested in the spec's open issue #102.",
+    "body": {
+      "$value": {
+        "fontFamily": "{font.family.sans}",
+        "fontWeight": "{font.weight.regular}",
+        "fontSize": { "value": 16, "unit": "px" },
+        "letterSpacing": { "value": 0, "unit": "px" },
+        "lineHeight": 1.5
+      }
+    },
+    "heading": {
+      "$value": {
+        "fontFamily": "{font.family.sans}",
+        "fontWeight": "{font.weight.bold}",
+        "fontSize": "{dimension.space.800}",
+        "letterSpacing": { "value": -0.64, "unit": "px" },
+        "lineHeight": 1.2
+      },
+      "$description": "fontSize reused a spacing token as a stand-in dimension reference — a type scale token would normally live in its own dimension.fontSize group instead."
+    }
+  }
+}

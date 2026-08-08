@@ -1,0 +1,16 @@
+{
+  "$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
+  "duration": {
+    "$type": "duration",
+    "$description": "Duration $value is an object with explicit value+unit, mirroring dimension's shape.",
+    "fast": { "$value": { "value": 100, "unit": "ms" } },
+    "moderate": { "$value": { "value": 250, "unit": "ms" } },
+    "slow": { "$value": { "value": 400, "unit": "ms" } }
+  },
+  "easing": {
+    "$type": "cubicBezier",
+    "$description": "cubicBezier $value is a 4-number array: [P1x, P1y, P2x, P2y], matching the CSS cubic-bezier() argument order. X-coordinates are constrained to [0,1]; y-coordinates are unbounded.",
+    "standard": { "$value": [0.4, 0, 0.2, 1] },
+    "entrance": { "$value": [0, 0, 0.2, 1] }
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
+  "color": {
+    "$description": "Primitive color palette. $type is set once here and inherited by every token below it. $value is the Color Module's structured object, not a bare hex string — colorSpace/components are the source of truth, hex is only a fallback.",
+    "$type": "color",
+    "gray": {
+      "100": {
+        "$value": { "colorSpace": "srgb", "components": [0.961, 0.961, 0.961], "alpha": 1, "hex": "#f5f5f5" }
+      },
+      "500": {
+        "$value": { "colorSpace": "srgb", "components": [0.451, 0.451, 0.451], "alpha": 1, "hex": "#737373" }
+      },
+      "900": {
+        "$value": { "colorSpace": "srgb", "components": [0.09, 0.09, 0.09], "alpha": 1, "hex": "#171717" },
+        "$description": "Near-black, used as the default text color on light surfaces."
+      }
+    },
+    "blue": {
+      "500": {
+        "$value": { "colorSpace": "srgb", "components": [0.231, 0.510, 0.965], "alpha": 1, "hex": "#3b82f6" },
+        "$extensions": {
+          "com.example.tool": {
+            "note": "Vendor/tool-specific data lives under a reverse-domain key inside $extensions; the spec does not define its contents."
+          }
+        }
+      }
+    }
+  },
+  "semantic": {
+    "$description": "Semantic aliases resolve to primitives via {group.token} references, so themes can repoint them without touching consumers. A curly-brace reference always resolves to the target token's whole $value, regardless of shape.",
+    "color": {
+      "$type": "color",
+      "text": {
+        "primary": { "$value": "{color.gray.900}" }
+      },
+      "action": {
+        "default": { "$value": "{color.blue.500}" }
+      },
+      "surface": {
+        "muted": {
+          "$value": "{color.gray.100}",
+          "$deprecated": "Renamed to semantic.color.surface.subtle; kept for one release cycle."
+        }
+      }
+    }
+  }
+}
