@@ -1,0 +1,42 @@
+@layer components {
+  .notification-counter {
+    background-color: rgb(192, 25, 51);
+    border-bottom-color: rgb(255, 255, 255);
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-bottom-style: solid;
+    border-bottom-width: 0px;
+    border-left-color: rgb(255, 255, 255);
+    border-left-style: solid;
+    border-left-width: 0px;
+    border-right-color: rgb(255, 255, 255);
+    border-right-style: solid;
+    border-right-width: 0px;
+    border-top-color: rgb(255, 255, 255);
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-top-style: solid;
+    border-top-width: 0px;
+    box-sizing: border-box;
+    color: rgb(255, 255, 255);
+    cursor: pointer;
+    display: block;
+    font-family: Whitney, sans-serif;
+    font-size: 10px;
+    font-weight: 375;
+    height: 15px;
+    letter-spacing: normal;
+    line-height: 15px;
+    margin-left: 12px;
+    padding-top: 0.06em;
+    position: absolute;
+    right: -3px;
+    text-align: center;
+    text-indent: 0px;
+    text-shadow: none;
+    text-transform: none;
+    top: 0px;
+    width: 15px;
+    word-spacing: 0px;
+  }
+}
