@@ -6,6 +6,8 @@ export function Trip(props: React.SVGProps<SVGSVGElement>) {
       height='16'
       viewBox='0 0 14 16'
       fill='none'
+      role='presentation'
+      aria-hidden='true'
       {...props}
     >
       <path

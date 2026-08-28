@@ -1,5 +1,5 @@
 ---
-description: local configuration to use this repo
+description: Local configuration to use this repo
 ---
 
 # Before you start using this repo

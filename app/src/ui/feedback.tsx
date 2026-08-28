@@ -4,6 +4,8 @@ export function Feedback(props: React.SVGProps<SVGSVGElement>) {
       width='17'
       height='16'
       viewBox='0 0 17 16'
+      role='presentation'
+      aria-hidden='true'
       {...props}
     >
       <path

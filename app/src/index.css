@@ -16,6 +16,7 @@
     --leaf-spacing-4: 4px;
     --leaf-spacing-8: 8px;
     --leaf-spacing-12: 12px;
+    --leaf-spacing-16: 16px;
     --leaf-spacing-32: 32px;
     --leaf-stroke-corner-radius: 6px;
     --leaf-typography-font-family: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', Segoe UI Symbol, 'Noto Color Emoji';
@@ -46,6 +47,10 @@
 
   .secondary {
     background: var(--leaf-color-gradient);
+  }
+
+  .secondary,
+  .secondary * {
     color: var(--leaf-color-neutral-0);
   }
 }

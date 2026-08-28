@@ -6,6 +6,8 @@ export function Pax(props: React.SVGProps<SVGSVGElement>) {
       height='18'
       viewBox='0 0 18 18'
       fill='none'
+      role='presentation'
+      aria-hidden='true'
       {...props}
     >
       <path

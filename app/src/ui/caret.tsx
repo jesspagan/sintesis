@@ -5,6 +5,8 @@ export function Caret(props: React.SVGProps<SVGSVGElement>) {
       width='12'
       height='12'
       fill='none'
+      role='presentation'
+      aria-hidden='true'
       {...props}
     >
       <path

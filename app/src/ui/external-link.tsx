@@ -25,6 +25,8 @@ export function ExternalLinkMedium(props: React.SVGProps<SVGSVGElement>) {
       height='10'
       viewBox='0 0 10 10'
       fill='none'
+      role='presentation'
+      aria-hidden='true'
       {...props}
     >
       <path
