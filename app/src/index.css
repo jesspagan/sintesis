@@ -1,3 +1,55 @@
+@layer base {
+  :root {
+    --leaf-color-delta-primary: #e01933;
+    --leaf-color-delta-secondary: #011e3c;
+    --leaf-color-blue: #0c7dee;
+    --leaf-color-blue-500: #003366;
+    --leaf-color-blue-alpha: #94c6f726;
+    --leaf-color-gradient: linear-gradient(#001932, #012);
+    --leaf-color-neutral-0: #ffffff;
+    --leaf-color-neutral-100: #dfe0e6;
+    --leaf-color-neutral-500: #caccd6;
+    --leaf-color-neutral-700: #80859c;
+    --leaf-color-red-500: #ad1934;
+    --leaf-color-red-700: #660f24;
+    --leaf-spacing-0: 0px;
+    --leaf-spacing-4: 4px;
+    --leaf-spacing-8: 8px;
+    --leaf-spacing-12: 12px;
+    --leaf-spacing-32: 32px;
+    --leaf-stroke-corner-radius: 6px;
+    --leaf-typography-font-family: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', Segoe UI Symbol, 'Noto Color Emoji';
+    --leaf-typography-font-size: 1.125rem;
+  }
+
+  :root * {
+    background-color: transparent;
+    color: var(--leaf-color-delta-secondary);
+  }
+
+  .icon-left {
+    margin-right: var(--leaf-spacing-8);
+  }
+
+  .icon-right {
+    margin-left: var(--leaf-spacing-4);
+  }
+
+  .primary {
+    background-color: var(--leaf-color-delta-primary);
+  }
+
+  .primary,
+  .primary * {
+    color: var(--leaf-color-neutral-0);
+  }
+
+  .secondary {
+    background: var(--leaf-color-gradient);
+    color: var(--leaf-color-neutral-0);
+  }
+}
+
 :root {
   --text: #6b6375;
   --text-h: #08060d;
@@ -8,18 +60,17 @@
   --accent-bg: rgba(170, 59, 255, 0.1);
   --accent-border: rgba(170, 59, 255, 0.5);
   --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+  --shadow: rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
 
   --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
   --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
   --mono: ui-monospace, Consolas, monospace;
 
+  background-color: var(--bg);
   font: 18px/145% var(--sans);
   letter-spacing: 0.18px;
   color-scheme: light dark;
   color: var(--text);
-  background: var(--bg);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -41,8 +92,7 @@
     --accent-bg: rgba(192, 132, 252, 0.15);
     --accent-border: rgba(192, 132, 252, 0.5);
     --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
+    --shadow: rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
   }
 
   #social .button-icon {
