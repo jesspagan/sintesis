@@ -1,0 +1,9 @@
+focus-ring:
+  brand:
+    background: '{color.surface}'
+    foreground: '{color.focus-ring.brand}'
+    required: '3:1'
+  neutral:
+    background: '{color.surface}'
+    foreground: '{color.focus-ring.neutral}'
+    required: '3:1'

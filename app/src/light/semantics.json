@@ -1,0 +1,9 @@
+{
+  "color": {
+    "surface": "{color.neutral.0}",
+    "focus-ring": {
+      "brand": "{color.blue}",
+      "neutral": "{color.neutral.1}"
+    }
+  }
+}
