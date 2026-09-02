@@ -14,6 +14,8 @@ function yamlPlugin(): Plugin {
 
 // https://vite.dev/config/
 export default defineConfig({
+  // Served from https://jesspagan.github.io/sintesis/ on GitHub Pages.
+  base: process.env.GITHUB_ACTIONS ? '/sintesis/' : '/',
   plugins: [react(), yamlPlugin()],
   test: {
     globals: true,
