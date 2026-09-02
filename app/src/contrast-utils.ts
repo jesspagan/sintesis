@@ -10,22 +10,36 @@ function resolvePath(path: string, tree: TokenTree): unknown {
 
 /** Resolves a DTCG-style `{group.token}` alias against one or more token trees, checked in order. */
 export function resolveToken(ref: string, ...trees: TokenTree[]): string {
+  return resolveAlias(ref, trees, new Set())
+}
+
+function resolveAlias(ref: string, trees: TokenTree[], seen: Set<string>): string {
   const match = ALIAS_PATTERN.exec(ref.trim())
   if (!match) return ref
 
   const path = match[1]
+  if (seen.has(path)) {
+    throw new Error(`Cyclic token reference: ${[...seen, path].join(' -> ')}`)
+  }
+  seen.add(path)
+
   for (const tree of trees) {
     const value = resolvePath(path, tree)
     if (value !== undefined) {
-      return typeof value === 'string' ? resolveToken(value, ...trees) : String(value)
+      return typeof value === 'string' ? resolveAlias(value, trees, seen) : String(value)
     }
   }
   throw new Error(`Unresolved token reference: ${ref}`)
 }
 
+const HEX_PATTERN = /^#?([0-9a-fA-F]{6})$/
+
 function hexToRgb(hex: string): [number, number, number] {
-  const clean = hex.replace('#', '')
-  const value = parseInt(clean, 16)
+  const match = HEX_PATTERN.exec(hex.trim())
+  if (!match) {
+    throw new Error(`Invalid hex color: ${hex}`)
+  }
+  const value = parseInt(match[1], 16)
   return [(value >> 16) & 255, (value >> 8) & 255, value & 255]
 }
 
@@ -49,7 +63,10 @@ export function contrastRatio(hexA: string, hexB: string): number {
 
 /** Parses a manifest ratio like "3:1" into its numeric threshold (3). */
 export function parseRequiredRatio(ratio: string): number {
-  const [numerator] = ratio.split(':').map(Number)
+  const numerator = Number(ratio.split(':')[0])
+  if (!Number.isFinite(numerator) || numerator <= 0) {
+    throw new Error(`Invalid contrast ratio: ${ratio}`)
+  }
   return numerator
 }
 
