@@ -1,0 +1,15 @@
+@layer tokens {
+  :root {
+    --color-neutral-0: #000;
+    --color-neutral-1: #fff;
+
+    --color-content: var(--color-neutral-0);
+    --color-surface: var(--color-neutral-1);
+  }
+}
+
+@layer base {
+  :root {
+    background-color: var(--color-surface);
+  }
+}
