@@ -1,20 +1,57 @@
+@font-face {
+  font-family: 'Roboto Flex';
+  src: url(/RobotoFlex.ttf) format('truetype');
+  font-weight: 100 1000;
+}
+
 @layer tokens {
   :root {
-    --leaf-color-neutral-00: #000;
-    --leaf-color-neutral-05: rgb(230, 230, 230);
-    --leaf-color-neutral-10: #fff;
+    --leaf-color-black: #000;
+    --leaf-stroke-style: solid;
+    --leaf-typography-family-sans: sans-serif;
+    --leaf-typography-family: var(--leaf-typography-family-sans);
+  }
+  [data-theme='CNN'] {
+    --leaf-color-neutral: rgb(230, 230, 230);
     --leaf-color-red-0: #c00;
     --leaf-color-red-1: #a4001e;
+    --leaf-color-white: #fff;
+    --leaf-radii: 6px;
+    --leaf-spacing: 0 12px;
+    --leaf-typography-family: cnn_sans_display, helveticaneue, Helvetica, Arial, Utkal, var(--leaf-typography-family-sans);
+    --leaf-typography-weight: 700;
 
-    --leaf-color-content: var(--leaf-color-neutral-00);
-    --leaf-color-content-on-brand: var(--leaf-color-neutral-10);
-    --leaf-color-stroke: var(--leaf-color-neutral-05);
-    --leaf-color-surface: var(--leaf-color-neutral-10);
-    --leaf-color-surface-brand-rest: var(--leaf-color-red-0);
-    --leaf-color-surface-brand-hover: var(--leaf-color-red-1);
+    --leaf-color-content: var(--leaf-color-black);
+    --leaf-color-content-on-brand: var(--leaf-color-white);
+    --leaf-color-control: var(--leaf-color-white);
+    --leaf-color-control-brand-rest: var(--leaf-color-red-0);
+    --leaf-color-control-brand-hover: var(--leaf-color-red-1);
+    --leaf-color-surface: var(--leaf-color-white);
+    --leaf-stroke: 1px var(--leaf-stroke-style) var(--leaf-color-neutral);
+    --leaf-stroke-on-brand: none;
+    --leaf-typography-transform: none;
+    --leaf-typography-variation-settings: none;
+  }
+  [data-theme='decathlon'] {
+    --leaf-color-neutral-0: rgb(34, 40, 39);
+    --leaf-color-neutral-1: #f4f4f4;
+    --leaf-color-yellow: rgb(215, 221, 68);
+    --leaf-color-content: var(--leaf-color-yellow);
+    --leaf-color-content-on-brand: var(--leaf-color-black);
+    --leaf-color-control: var(--leaf-color-neutral-0);
+    --leaf-color-control-brand-rest: var(--leaf-color-yellow);
+    --leaf-color-control-brand-hover: var(--leaf-color-yellow);
+    --leaf-color-surface: var(--leaf-color-neutral-1);
 
-    --leaf-typography-font-family: cnn_sans_display, helveticaneue, Helvetica, Arial, Utkal, sans-serif;
-    --leaf-typography-content-font-size: var(--leaf-typography-font-family);
+    --leaf-radii: 10px;
+    --leaf-spacing: 15px 20px;
+    --leaf-stroke: 2px solid var(--leaf-color-black);
+    --leaf-stroke-on-brand: var(--leaf-stroke);
+
+    --leaf-typography-family: 'Roboto Flex', var(--leaf-typography-family-sans);
+    --leaf-typography-transform: uppercase;
+    --leaf-typography-variation-settings: 'wdth' 33;
+    --leaf-typography-weight: 535;
   }
 }
 
@@ -29,38 +66,40 @@
 @layer base {
   :root * {
     background-color: var(--leaf-color-surface);
-    font-family: var(--leaf-typography-content-font-family);
+    font-family: var(--leaf-typography-family);
   }
 }
 
 @layer components {
   button {
-    border-radius: 6px;
+    border-radius: var(--leaf-radii);
     cursor: pointer;
     font-size: 14px;
-    font-weight: 700;
+    font-variation-settings: var(--leaf-typography-variation-settings);
+    font-weight: var(--leaf-typography-weight);
     min-height: 30px;
-    padding: 0 12px;
+    padding: var(--leaf-spacing);
+    text-transform: var(--leaf-typography-transform);
   }
 
+  button,
   button.brand {
-    background-color: var(--leaf-color-surface-brand-rest);
+    background-color: var(--leaf-color-control-brand-rest);
+    border: var(--leaf-stroke-on-brand);
     color: var(--leaf-color-content-on-brand);
   }
 
   button:hover {
-    background-color: var(--leaf-color-surface-brand-hover);
+    background-color: var(--leaf-color-control-brand-hover);
   }
 
   button.neutral {
-    background-color: var(--leaf-color-surface);
-    border-color: var(--leaf-color-stroke);
-    border-style: solid;
-    border-width: 1px;
+    background-color: var(--leaf-color-control);
+    border: var(--leaf-stroke);
     color: var(--leaf-color-content);
   }
 
   button.neutral:hover {
-    background-color: var(--leaf-color-neutral-05);
+    background-color: var(--leaf-color-control);
   }
 }
