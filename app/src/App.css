@@ -3,3 +3,8 @@
 .app {
   margin: auto;
 }
+.content {
+  column-gap: var(--leaf-spacing);
+  display: flex;
+  margin-top: var(--leaf-spacing);
+}

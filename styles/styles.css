@@ -7,6 +7,7 @@
 @layer tokens {
   :root {
     --leaf-color-black: #000;
+    --leaf-spacing: 12px;
     --leaf-stroke-style: solid;
     --leaf-typography-family-sans: sans-serif;
     --leaf-typography-family: var(--leaf-typography-family-sans);
@@ -17,8 +18,7 @@
     --leaf-color-red-1: #a4001e;
     --leaf-color-white: #fff;
     --leaf-radii: 6px;
-    --leaf-spacing: 0 12px;
-    --leaf-typography-family: cnn_sans_display, helveticaneue, Helvetica, Arial, Utkal, var(--leaf-typography-family-sans);
+    --leaf-typography-transform: none;
     --leaf-typography-weight: 700;
 
     --leaf-color-content: var(--leaf-color-black);
@@ -27,31 +27,34 @@
     --leaf-color-control-brand-rest: var(--leaf-color-red-0);
     --leaf-color-control-brand-hover: var(--leaf-color-red-1);
     --leaf-color-surface: var(--leaf-color-white);
+    --leaf-control-spacing: 0 var(--leaf-spacing);
+
+    --leaf-shadow: none;
     --leaf-stroke: 1px var(--leaf-stroke-style) var(--leaf-color-neutral);
     --leaf-stroke-on-brand: none;
-    --leaf-typography-transform: none;
+    --leaf-typography-family: cnn_sans_display, helveticaneue, Helvetica, Arial, Utkal, var(--leaf-typography-family-sans);
     --leaf-typography-variation-settings: none;
   }
   [data-theme='decathlon'] {
     --leaf-color-neutral-0: rgb(34, 40, 39);
     --leaf-color-neutral-1: #f4f4f4;
     --leaf-color-yellow: rgb(215, 221, 68);
+    --leaf-radii: 10px;
+    --leaf-typography-transform: uppercase;
+    --leaf-typography-weight: 535;
+
     --leaf-color-content: var(--leaf-color-yellow);
     --leaf-color-content-on-brand: var(--leaf-color-black);
     --leaf-color-control: var(--leaf-color-neutral-0);
     --leaf-color-control-brand-rest: var(--leaf-color-yellow);
     --leaf-color-control-brand-hover: var(--leaf-color-yellow);
     --leaf-color-surface: var(--leaf-color-neutral-1);
-
-    --leaf-radii: 10px;
-    --leaf-spacing: 15px 20px;
+    --leaf-control-spacing: 15px 20px;
+    --leaf-shadow: -4px 6px var(--leaf-color-black);
     --leaf-stroke: 2px solid var(--leaf-color-black);
     --leaf-stroke-on-brand: var(--leaf-stroke);
-
     --leaf-typography-family: 'Roboto Flex', var(--leaf-typography-family-sans);
-    --leaf-typography-transform: uppercase;
     --leaf-typography-variation-settings: 'wdth' 33;
-    --leaf-typography-weight: 535;
   }
 }
 
@@ -73,12 +76,13 @@
 @layer components {
   button {
     border-radius: var(--leaf-radii);
+    box-shadow: var(--leaf-shadow);
     cursor: pointer;
     font-size: 14px;
     font-variation-settings: var(--leaf-typography-variation-settings);
     font-weight: var(--leaf-typography-weight);
     min-height: 30px;
-    padding: var(--leaf-spacing);
+    padding: var(--leaf-control-spacing);
     text-transform: var(--leaf-typography-transform);
   }
 
