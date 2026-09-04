@@ -4,7 +4,8 @@ import { Button } from "./ui/button";
 function App() {
   return (
     <div className="app">
-      <Button>botón</Button>
+      <Button className="brand">botón</Button>
+      <Button className="neutral">botón</Button>
     </div>
   );
 }

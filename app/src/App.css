@@ -1,8 +1,5 @@
-@import "../../styles/base.css";
+@import "../../styles/styles.css";
 
 .app {
-  align-items: center;
-  display: flex;
-  height: 100vh;
-  justify-content: center;
+  margin: auto;
 }

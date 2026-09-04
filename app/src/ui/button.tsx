@@ -1,16 +1,23 @@
-import React, { createElement } from 'react';
-import './button.css';
+import React, { createElement } from "react";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  size?: 'large';
+  size?: "large";
 }
 
-export function Button({ children, onClick, disabled, size, className, ...props }: ButtonProps) {
-  const sizeClass = size === 'large' ? 'large' : undefined;
-  const mergedClassName = [sizeClass, className].filter(Boolean).join(' ') || undefined;
+export function Button({
+  children,
+  onClick,
+  disabled,
+  size,
+  className,
+  ...props
+}: ButtonProps) {
+  const sizeClass = size === "large" ? "large" : undefined;
+  const mergedClassName =
+    [sizeClass, className].filter(Boolean).join(" ") || undefined;
 
   return createElement(
-    'button',
+    "button",
     {
       onClick,
       className: mergedClassName,
