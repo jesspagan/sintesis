@@ -1,4 +1,9 @@
 @font-face {
+  font-family: 'Inter';
+  src: url(/Inter.ttf) format('truetype');
+}
+
+@font-face {
   font-family: 'Roboto Flex';
   src: url(/RobotoFlex.ttf) format('truetype');
   font-weight: 100 1000;
@@ -7,31 +12,40 @@
 @layer tokens {
   :root {
     --leaf-color-black: #000;
+    --leaf-color-white: #fff;
+    --leaf-dimension: 24px;
     --leaf-spacing: 12px;
     --leaf-stroke-style: solid;
+    --leaf-stroke-thickness: 1px;
     --leaf-typography-family-sans: sans-serif;
+    --leaf-typography-size: 14px;
+    --leaf-typography-transform: capitalize;
+
+    --leaf-color-content-on-brand: var(--leaf-color-white);
+    --leaf-color-surface: var(--leaf-color-white);
     --leaf-typography-family: var(--leaf-typography-family-sans);
   }
   [data-theme='CNN'] {
     --leaf-color-neutral: rgb(230, 230, 230);
     --leaf-color-red-0: #c00;
     --leaf-color-red-1: #a4001e;
-    --leaf-color-white: #fff;
+    --leaf-dimension: 30px;
     --leaf-radii: 6px;
+    --leaf-typography-line-height: unset;
     --leaf-typography-transform: none;
     --leaf-typography-weight: 700;
 
     --leaf-color-content: var(--leaf-color-black);
-    --leaf-color-content-on-brand: var(--leaf-color-white);
     --leaf-color-control: var(--leaf-color-white);
     --leaf-color-control-hover: var(--leaf-color-neutral);
     --leaf-color-control-brand-rest: var(--leaf-color-red-0);
     --leaf-color-control-brand-hover: var(--leaf-color-red-1);
-    --leaf-color-surface: var(--leaf-color-white);
+    --leaf-color-control-brand-active: var(--leaf-color-red-1);
+    --leaf-color-control-brand-active: var(--leaf-color-red-1);
     --leaf-control-spacing: 0 var(--leaf-spacing);
 
     --leaf-shadow: none;
-    --leaf-stroke: 1px var(--leaf-stroke-style) var(--leaf-color-neutral);
+    --leaf-stroke: var(--leaf-stroke-thickness) var(--leaf-stroke-style) var(--leaf-color-neutral);
     --leaf-stroke-on-brand: none;
     --leaf-transform: none;
     --leaf-transition: none;
@@ -43,6 +57,7 @@
     --leaf-color-neutral-1: #f4f4f4;
     --leaf-color-yellow: rgb(215, 221, 68);
     --leaf-radii: 10px;
+    --leaf-typography-line-height: 0.5;
     --leaf-typography-transform: uppercase;
     --leaf-typography-weight: 535;
 
@@ -50,17 +65,40 @@
     --leaf-color-content-on-brand: var(--leaf-color-black);
     --leaf-color-control: var(--leaf-color-neutral-0);
     --leaf-color-control-hover: var(--leaf-color-neutral-0);
+    --leaf-color-control-active: var(--leaf-color-neutral-0);
     --leaf-color-control-brand-rest: var(--leaf-color-yellow);
     --leaf-color-control-brand-hover: var(--leaf-color-yellow);
+    --leaf-color-control-brand-active: var(--leaf-color-yellow);
     --leaf-color-surface: var(--leaf-color-neutral-1);
     --leaf-control-spacing: 15px 20px;
     --leaf-shadow: -4px 6px var(--leaf-color-black);
-    --leaf-stroke: 2px solid var(--leaf-color-black);
+    --leaf-stroke: 2px var(--leaf-stroke-style) var(--leaf-color-black);
     --leaf-stroke-on-brand: var(--leaf-stroke);
     --leaf-transform: translate(-4px, 6px);
     --leaf-transition: transform 0.3s cubic-bezier(0.215, 0.61, 0.355, 1), box-shadow 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
     --leaf-typography-family: 'Roboto Flex', var(--leaf-typography-family-sans);
     --leaf-typography-variation-settings: 'wdth' 33;
+  }
+  [data-theme='figma'] {
+    --leaf-color-black-alpha: rgb(from var(--leaf-color-black) r g b / 0.1);
+    --leaf-color-blue-0: rgb(13, 153, 255);
+    --leaf-color-blue-1: rgb(0, 123, 229);
+    --leaf-color-blue-2: rgb(7, 104, 207);
+    --leaf-radii: 5px;
+    --leaf-spacing: 8px;
+    --leaf-typography-line-height: 16px;
+    --leaf-typography-size: 11px;
+
+    --leaf-color-control-hover: rgb(from var(--leaf-color-black) r g b / 0.05);
+    --leaf-color-control-active: var(--leaf-color-black-alpha);
+    --leaf-color-control-brand-rest: var(--leaf-color-blue-0);
+    --leaf-color-control-brand-hover: var(--leaf-color-blue-1);
+    --leaf-color-control-brand-active: var(--leaf-color-blue-2);
+    --leaf-control-spacing: 0 var(--leaf-spacing);
+    --leaf-stroke: var(--leaf-stroke-thickness) var(--leaf-stroke-style) var(--leaf-color-black-alpha);
+    --leaf-typography-family:
+      Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans',
+      var(--leaf-typography-family-sans), SFProLocalRange;
   }
 }
 
@@ -84,10 +122,11 @@
     border-radius: var(--leaf-radii);
     box-shadow: var(--leaf-shadow);
     cursor: pointer;
-    font-size: 14px;
+    font-size: var(--leaf-typography-size);
     font-variation-settings: var(--leaf-typography-variation-settings);
     font-weight: var(--leaf-typography-weight);
-    min-height: 30px;
+    line-height: var(--leaf-typography-line-height);
+    min-height: var(--leaf-dimension);
     padding: var(--leaf-control-spacing);
     text-transform: var(--leaf-typography-transform);
     transition: var(--leaf-transition);
@@ -106,6 +145,10 @@
     transform: var(--leaf-transform);
   }
 
+  button:active {
+    background-color: var(--leaf-color-control-brand-active);
+  }
+
   button.neutral {
     background-color: var(--leaf-color-control);
     border: var(--leaf-stroke);
@@ -114,5 +157,9 @@
 
   button.neutral:hover {
     background-color: var(--leaf-color-control-hover);
+  }
+
+  button.neutral:active {
+    background: var(--leaf-color-control-active);
   }
 }
