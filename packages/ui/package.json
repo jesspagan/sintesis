@@ -1,0 +1,50 @@
+{
+  "name": "@sintesis/ui",
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "source": "./src/index.ts",
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./tokens.css": "./src/tokens/tokens.css",
+    "./index.css": "./dist/index.css"
+  },
+  "files": [
+    "dist",
+    "src/tokens"
+  ],
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.23",
+    "@types/react-dom": "^18.3.7",
+    "@vitejs/plugin-react": "^4.5.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^7.6.2",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.5",
+    "vite-plugin-dts": "^4.5.4",
+    "storybook": "^10.6.6",
+    "@storybook/react-vite": "^10.6.6",
+    "@chromatic-com/storybook": "latest",
+    "@storybook/addon-vitest": "^10.6.6",
+    "@storybook/addon-a11y": "^10.6.6",
+    "@storybook/addon-docs": "^10.6.6",
+    "@storybook/addon-mcp": "^10.6.6",
+    "vitest": "latest",
+    "@vitest/browser-playwright": "latest",
+    "@vitest/coverage-v8": "latest",
+    "playwright": "latest"
+  },
+  "scripts": {
+    "build": "tsc --noEmit && vite build",
+    "test": "vitest --project storybook run",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
+  }
+}

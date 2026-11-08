@@ -1,0 +1,65 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--gnrc-radius-lg);
+  overflow: hidden;
+}
+
+/* Variants */
+.variant-flat {
+  background: var(--gnrc-bg-base);
+}
+
+.variant-raised {
+  background: var(--gnrc-bg-raised);
+  box-shadow: var(--gnrc-shadow-sm);
+}
+
+.variant-outlined {
+  background: var(--gnrc-bg-raised);
+  border: 1px solid var(--gnrc-border);
+}
+
+/* Padding — applied only on cards without slots */
+.padding-none { padding: 0; }
+.padding-sm   { padding: var(--gnrc-space-4); }
+.padding-md   { padding: var(--gnrc-space-6); }
+.padding-lg   { padding: var(--gnrc-space-10); }
+
+/* Slot-bearing cards: strip outer padding so separators reach the card edges */
+.has-header,
+.has-footer {
+  padding: 0;
+}
+
+/* Header and footer manage their own insets */
+.header {
+  padding: var(--gnrc-space-4) var(--gnrc-space-6);
+  border-bottom: 1px solid var(--gnrc-border);
+  font-family: var(--gnrc-font-sans);
+  font-weight: var(--gnrc-weight-semibold);
+  font-size: var(--gnrc-text-base);
+  color: var(--gnrc-text-primary);
+}
+
+.body {
+  flex: 1;
+}
+
+.footer {
+  padding: var(--gnrc-space-4) var(--gnrc-space-6);
+  border-top: 1px solid var(--gnrc-border);
+}
+
+/* Body padding in slot-bearing cards */
+.has-header .body,
+.has-footer .body {
+  padding: var(--gnrc-space-4) var(--gnrc-space-6);
+}
+
+/* Body in unslotted cards is the content wrapper — card padding already applied */
+.padding-sm:not(.has-header):not(.has-footer) .body,
+.padding-md:not(.has-header):not(.has-footer) .body,
+.padding-lg:not(.has-header):not(.has-footer) .body {
+  padding: 0;
+}

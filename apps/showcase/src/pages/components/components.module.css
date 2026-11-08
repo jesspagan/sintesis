@@ -1,0 +1,21 @@
+.page {
+  max-width: 112rem;
+  margin: 0 auto;
+  padding: var(--gnrc-space-12) var(--gnrc-space-6);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(28rem, 100%), 1fr));
+  gap: var(--gnrc-space-4);
+}
+
+.card-header {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.view-btn {
+  align-self: flex-start;
+  margin-top: var(--gnrc-space-2);
+}
