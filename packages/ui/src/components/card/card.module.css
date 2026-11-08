@@ -20,13 +20,19 @@
   border: 1px solid var(--gnrc-border);
 }
 
-/* Padding */
+/* Padding — applied only on cards without slots */
 .padding-none { padding: 0; }
 .padding-sm   { padding: var(--gnrc-space-4); }
 .padding-md   { padding: var(--gnrc-space-6); }
 .padding-lg   { padding: var(--gnrc-space-10); }
 
-/* Header and footer don't inherit card padding — they define their own */
+/* Slot-bearing cards: strip outer padding so separators reach the card edges */
+.has-header,
+.has-footer {
+  padding: 0;
+}
+
+/* Header and footer manage their own insets */
 .header {
   padding: var(--gnrc-space-4) var(--gnrc-space-6);
   border-bottom: 1px solid var(--gnrc-border);
@@ -45,19 +51,13 @@
   border-top: 1px solid var(--gnrc-border);
 }
 
-/* When card has header/footer, body gets its own padding via the card's padding class */
+/* Body padding in slot-bearing cards */
 .has-header .body,
 .has-footer .body {
   padding: var(--gnrc-space-4) var(--gnrc-space-6);
 }
 
-/* Override: if card padding is none but has header/footer, body still needs padding */
-.padding-none.has-header .body,
-.padding-none.has-footer .body {
-  padding: var(--gnrc-space-4) var(--gnrc-space-6);
-}
-
-/* When no header/footer, the body wraps all content and inherits card padding */
+/* Body in unslotted cards is the content wrapper — card padding already applied */
 .padding-sm:not(.has-header):not(.has-footer) .body,
 .padding-md:not(.has-header):not(.has-footer) .body,
 .padding-lg:not(.has-header):not(.has-footer) .body {
