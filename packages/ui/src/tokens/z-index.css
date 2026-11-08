@@ -1,0 +1,9 @@
+:root {
+  --gnrc-z-base:     0;
+  --gnrc-z-raised:   10;
+  --gnrc-z-dropdown: 100;
+  --gnrc-z-sticky:   200;
+  --gnrc-z-overlay:  300;
+  --gnrc-z-modal:    400;
+  --gnrc-z-toast:    500;
+}

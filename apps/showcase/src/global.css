@@ -1,0 +1,27 @@
+html {
+  font-size: 62.5%;
+  box-sizing: border-box;
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+body {
+  margin: 0;
+  background-color: var(--gnrc-bg-base);
+  color: var(--gnrc-text-primary);
+  font-family: var(--gnrc-font-sans);
+  font-size: var(--gnrc-text-base);
+  line-height: var(--gnrc-leading-normal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: inherit;
+}
+
+h1, h2, h3, h4, h5, h6, p {
+  margin: 0;
+}

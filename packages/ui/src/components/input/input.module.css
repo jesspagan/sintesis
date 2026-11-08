@@ -1,0 +1,93 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gnrc-space-1);
+}
+
+.label {
+  font-family: var(--gnrc-font-sans);
+  font-size: var(--gnrc-text-sm);
+  font-weight: var(--gnrc-weight-semibold);
+  letter-spacing: var(--gnrc-tracking-wide);
+  text-transform: lowercase;
+  color: var(--gnrc-text-primary);
+}
+
+.input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input {
+  width: 100%;
+  font-family: var(--gnrc-font-sans);
+  font-size: var(--gnrc-text-base);
+  font-weight: var(--gnrc-weight-regular);
+  color: var(--gnrc-text-primary);
+  background: var(--gnrc-bg-sunken);
+  border: 1px solid var(--gnrc-border);
+  border-radius: var(--gnrc-radius-md);
+  outline: none;
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+  box-sizing: border-box;
+}
+
+.input::placeholder {
+  color: var(--gnrc-text-disabled);
+}
+
+.input:focus {
+  border-color: var(--gnrc-border-brand);
+  box-shadow: var(--gnrc-focus-ring);
+}
+
+.input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Sizes */
+.size-sm .input { padding: 0.5rem 1.0rem; height: 3.2rem; font-size: var(--gnrc-text-sm); }
+.size-md .input { padding: 0.7rem 1.2rem; height: 4.0rem; }
+.size-lg .input { padding: 1.0rem 1.6rem; height: 5.0rem; font-size: var(--gnrc-text-md); }
+
+.size-sm { gap: var(--gnrc-space-1); }
+.size-md { gap: var(--gnrc-space-1); }
+.size-lg { gap: var(--gnrc-space-2); }
+
+/* Icon padding */
+.has-icon-left .input  { padding-left: 3.6rem; }
+.has-icon-right .input { padding-right: 3.6rem; }
+
+.icon {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  color: var(--gnrc-text-secondary);
+  pointer-events: none;
+}
+
+.icon-left  { left: 1.2rem; }
+.icon-right { right: 1.2rem; }
+
+/* Error state */
+.error .input {
+  border-color: var(--gnrc-color-error-500);
+}
+
+.error .input:focus {
+  box-shadow: 0 0 0 3px var(--gnrc-color-error-100);
+}
+
+.helper {
+  font-family: var(--gnrc-font-sans);
+  font-size: var(--gnrc-text-sm);
+  color: var(--gnrc-text-secondary);
+}
+
+.error-msg {
+  font-family: var(--gnrc-font-sans);
+  font-size: var(--gnrc-text-sm);
+  color: var(--gnrc-fg-error);
+}

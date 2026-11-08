@@ -1,0 +1,45 @@
+.page {
+  max-width: 112rem;
+  margin: 0 auto;
+  padding: var(--gnrc-space-12) var(--gnrc-space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gnrc-space-12);
+}
+
+.hero {
+  padding: var(--gnrc-space-16) 0;
+}
+
+.subtitle {
+  max-width: 56rem;
+  font-size: var(--gnrc-text-lg) !important;
+  line-height: var(--gnrc-leading-relaxed) !important;
+}
+
+.section-title {
+  margin-bottom: var(--gnrc-space-8);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(28rem, 1fr));
+  gap: var(--gnrc-space-4);
+}
+
+.cta {
+  text-align: center;
+  padding: var(--gnrc-space-12) 0;
+}
+
+.code-block {
+  font-family: var(--gnrc-font-mono);
+  text-align: left;
+  width: 100%;
+  max-width: 48rem;
+}
+
+.code-block pre {
+  white-space: pre;
+  margin: 0;
+}

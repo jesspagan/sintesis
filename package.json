@@ -1,0 +1,11 @@
+{
+  "name": "sintesis",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --filter showcase dev",
+    "build": "pnpm --filter @sintesis/ui build && pnpm --filter showcase build",
+    "storybook": "pnpm --filter @sintesis/ui storybook",
+    "build-storybook": "pnpm --filter @sintesis/ui build-storybook",
+    "preview": "pnpm --filter showcase preview"
+  }
+}

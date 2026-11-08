@@ -1,0 +1,58 @@
+:root {
+  /* Surfaces */
+  --gnrc-bg-base:   var(--gnrc-color-neutral-100);
+  --gnrc-bg-raised: var(--gnrc-color-neutral-50);
+  --gnrc-bg-sunken: var(--gnrc-color-neutral-200);
+
+  /* Brand surfaces */
+  --gnrc-bg-brand:        var(--gnrc-color-green-500);
+  --gnrc-bg-brand-hover:  var(--gnrc-color-green-600);
+  --gnrc-bg-brand-subtle: var(--gnrc-color-green-100);
+
+  /* Text */
+  --gnrc-text-primary:   var(--gnrc-color-neutral-900);
+  --gnrc-text-secondary: var(--gnrc-color-neutral-600);
+  --gnrc-text-disabled:  var(--gnrc-color-neutral-400);
+  --gnrc-text-inverse:   var(--gnrc-color-neutral-50);
+  --gnrc-text-brand:     var(--gnrc-color-green-600);
+
+  /* Borders */
+  --gnrc-border:        var(--gnrc-color-neutral-200);
+  --gnrc-border-strong: var(--gnrc-color-neutral-400);
+  --gnrc-border-brand:  var(--gnrc-color-green-400);
+
+  /* Interactive */
+  --gnrc-bg-interactive:        var(--gnrc-color-neutral-200);
+  --gnrc-bg-interactive-hover:  var(--gnrc-color-neutral-300);
+  --gnrc-bg-interactive-active: var(--gnrc-color-neutral-400);
+
+  /* Status: success */
+  --gnrc-bg-success:  var(--gnrc-color-success-50);
+  --gnrc-fg-success:  var(--gnrc-color-success-800);
+  --gnrc-border-success: var(--gnrc-color-success-100);
+
+  /* Status: warning */
+  --gnrc-bg-warning:     var(--gnrc-color-warning-50);
+  --gnrc-fg-warning:     var(--gnrc-color-warning-800);
+  --gnrc-border-warning: var(--gnrc-color-warning-100);
+
+  /* Status: error */
+  --gnrc-bg-error:     var(--gnrc-color-error-50);
+  --gnrc-fg-error:     var(--gnrc-color-error-800);
+  --gnrc-border-error: var(--gnrc-color-error-100);
+
+  /* Status: info */
+  --gnrc-bg-info:     var(--gnrc-color-info-50);
+  --gnrc-fg-info:     var(--gnrc-color-info-800);
+  --gnrc-border-info: var(--gnrc-color-info-100);
+
+  /* Semantic spacing */
+  --gnrc-gap-xs: var(--gnrc-space-2);
+  --gnrc-gap-sm: var(--gnrc-space-3);
+  --gnrc-gap-md: var(--gnrc-space-4);
+  --gnrc-gap-lg: var(--gnrc-space-6);
+  --gnrc-gap-xl: var(--gnrc-space-8);
+
+  /* Focus ring */
+  --gnrc-focus-ring: 0 0 0 3px var(--gnrc-color-green-300);
+}

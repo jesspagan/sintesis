@@ -1,12 +1,9 @@
 node_modules/
 dist/
-dist-ssr/
+storybook-static/
 *.local
-
 .DS_Store
+Thumbs.db
 *.log
-npm-debug.log*
-
-.vscode/*
-!.vscode/extensions.json
-.idea
+*.tgz
+.pnpm-approved-builds.yaml
