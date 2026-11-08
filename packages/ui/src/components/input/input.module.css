@@ -34,7 +34,7 @@
 }
 
 .input::placeholder {
-  color: var(--gnrc-text-disabled);
+  color: var(--gnrc-text-secondary);
 }
 
 .input:focus {

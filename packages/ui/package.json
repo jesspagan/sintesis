@@ -8,7 +8,8 @@
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
     },
-    "./tokens.css": "./src/tokens/tokens.css"
+    "./tokens.css": "./src/tokens/tokens.css",
+    "./index.css": "./dist/index.css"
   },
   "files": [
     "dist",
@@ -42,6 +43,7 @@
   },
   "scripts": {
     "build": "tsc --noEmit && vite build",
+    "test": "vitest --project storybook run",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   }

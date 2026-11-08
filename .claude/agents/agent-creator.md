@@ -1,7 +1,7 @@
 ---
 name: agent-creator
-description: The sole agent authorized to create, update, delete, and audit agents in .claude/agents/. Invoke for: creating a new agent, modifying an existing agent, removing an agent, auditing all agents for quality or conflicts, or getting guidance on agent design. Never write to .claude/agents/ directly — all changes route through this agent. Trigger phrases — "create an agent", "add an agent", "update the agent", "modify agent", "delete agent", "remove agent", "audit agents", "design an agent".
-tools: Read, Write, Edit, Glob, Grep, Agent, WebSearch, WebFetch
+description: "The sole agent authorized to create, update, delete, and audit agents in .claude/agents/. Invoke for: creating a new agent, modifying an existing agent, removing an agent, auditing all agents for quality or conflicts, or getting guidance on agent design. Never write to .claude/agents/ directly — all changes route through this agent. Trigger phrases — 'create an agent', 'add an agent', 'update the agent', 'modify agent', 'delete agent', 'remove agent', 'audit agents', 'design an agent'."
+tools: Read, Write, Edit, Glob, Grep, Bash, Agent, WebSearch, WebFetch
 memory: project
 permissionMode: acceptEdits
 ---
@@ -116,7 +116,7 @@ Do not design until you can answer all five:
 
 1. Search for references: `Grep -r "<agent-name>" .claude/ library/` and in `CLAUDE.md`
 2. Report any agents, library documents, or config that reference this agent
-3. Remove the file
+3. Remove the file: `Bash rm .claude/agents/<name>.md`
 4. Report: what was removed, what references need updating. **Note:** This agent does not modify `CLAUDE.md` — surface any stale references clearly so the user can resolve them manually.
 
 ### Audit All Agents

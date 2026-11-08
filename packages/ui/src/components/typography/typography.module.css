@@ -36,6 +36,8 @@
 .text-disabled  { color: var(--gnrc-text-disabled); }
 .text-inverse   { color: var(--gnrc-text-inverse); }
 
+.heading-uppercase { text-transform: none; }
+
 .weight-regular  { font-weight: var(--gnrc-weight-regular); }
 .weight-medium   { font-weight: var(--gnrc-weight-medium); }
 .weight-semibold { font-weight: var(--gnrc-weight-semibold); }

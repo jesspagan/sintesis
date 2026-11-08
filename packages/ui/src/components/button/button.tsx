@@ -25,8 +25,10 @@ export function Button({
   className,
   children,
   as: Tag = 'button',
+  onClick,
   ...rest
 }: ButtonProps) {
+  const isDisabled = disabled || loading
   const classes = [
     styles.button,
     styles[`variant-${variant}`],
@@ -37,11 +39,17 @@ export function Button({
     .filter(Boolean)
     .join(' ')
 
+  const handleClick =
+    isDisabled && Tag !== 'button'
+      ? (e: React.MouseEvent) => { e.preventDefault(); e.stopPropagation() }
+      : onClick
+
   return (
     <Tag
       className={classes}
-      disabled={Tag === 'button' ? disabled || loading : undefined}
-      aria-disabled={Tag !== 'button' ? disabled || loading : undefined}
+      disabled={Tag === 'button' ? isDisabled : undefined}
+      aria-disabled={Tag !== 'button' ? isDisabled || undefined : undefined}
+      onClick={handleClick}
       {...rest}
     >
       {loading ? (

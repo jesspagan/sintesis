@@ -58,8 +58,8 @@
 }
 
 /* When no header/footer, the body wraps all content and inherits card padding */
-.padding-sm .body,
-.padding-md .body,
-.padding-lg .body {
+.padding-sm:not(.has-header):not(.has-footer) .body,
+.padding-md:not(.has-header):not(.has-footer) .body,
+.padding-lg:not(.has-header):not(.has-footer) .body {
   padding: 0;
 }

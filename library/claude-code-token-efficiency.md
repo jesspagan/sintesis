@@ -4,7 +4,7 @@ title: Claude Code Token Efficiency — Complete Reference Guide
 subjects: [claude-code, tokens, context-management, prompt-caching, cost-optimization]
 type: reference-guide
 created: 2026-06-16
-updated: 2026-06-16
+updated: 2026-11-08
 abstract: Comprehensive guide to managing context window usage in Claude Code: caching behavior, commands (/clear, /compact, /btw), deprecated features, Pro vs Max thresholds, and anti-patterns that waste tokens.
 ---
 
@@ -109,20 +109,22 @@ In `~/.claude/settings.json` or your project's `.claude/settings.json`:
 {
   "permissions": {
     "deny": [
-      ".env",
-      "node_modules/**",
-      "dist/**",
-      "build/**",
-      "coverage/**",
-      ".next/**",
-      "logs/**",
-      "*.log"
+      "Read(.env)",
+      "Read(node_modules/**)",
+      "Read(dist/**)",
+      "Read(build/**)",
+      "Read(coverage/**)",
+      "Read(.next/**)",
+      "Read(logs/**)",
+      "Read(*.log)"
     ]
   }
 }
 ```
 
 **Do NOT use `.claudeignore`** — it's broken as of January 2026 (The Register confirmed; open `anthropics/claude-code` issues #579, #4160). Claude reads files it's supposed to block, including `.env`. Use `permissions.deny` instead — enforced at the tool level.
+
+**Note on `Read(...)` syntax:** Denial rules must be scoped to a tool — bare filenames (e.g. `.env`) are not valid syntax; use `Read(.env)` etc. These rules block only the Read tool; access via other tools (e.g. Bash `cat`) is not affected by these rules.
 
 Measured impact of disciplined deny rules: up to 85% context reduction.
 
