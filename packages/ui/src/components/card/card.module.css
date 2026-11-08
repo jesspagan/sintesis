@@ -1,0 +1,65 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--gnrc-radius-lg);
+  overflow: hidden;
+}
+
+/* Variants */
+.variant-flat {
+  background: var(--gnrc-bg-base);
+}
+
+.variant-raised {
+  background: var(--gnrc-bg-raised);
+  box-shadow: var(--gnrc-shadow-sm);
+}
+
+.variant-outlined {
+  background: var(--gnrc-bg-raised);
+  border: 1px solid var(--gnrc-border);
+}
+
+/* Padding */
+.padding-none { padding: 0; }
+.padding-sm   { padding: var(--gnrc-space-4); }
+.padding-md   { padding: var(--gnrc-space-6); }
+.padding-lg   { padding: var(--gnrc-space-10); }
+
+/* Header and footer don't inherit card padding — they define their own */
+.header {
+  padding: var(--gnrc-space-4) var(--gnrc-space-6);
+  border-bottom: 1px solid var(--gnrc-border);
+  font-family: var(--gnrc-font-sans);
+  font-weight: var(--gnrc-weight-semibold);
+  font-size: var(--gnrc-text-base);
+  color: var(--gnrc-text-primary);
+}
+
+.body {
+  flex: 1;
+}
+
+.footer {
+  padding: var(--gnrc-space-4) var(--gnrc-space-6);
+  border-top: 1px solid var(--gnrc-border);
+}
+
+/* When card has header/footer, body gets its own padding via the card's padding class */
+.has-header .body,
+.has-footer .body {
+  padding: var(--gnrc-space-4) var(--gnrc-space-6);
+}
+
+/* Override: if card padding is none but has header/footer, body still needs padding */
+.padding-none.has-header .body,
+.padding-none.has-footer .body {
+  padding: var(--gnrc-space-4) var(--gnrc-space-6);
+}
+
+/* When no header/footer, the body wraps all content and inherits card padding */
+.padding-sm .body,
+.padding-md .body,
+.padding-lg .body {
+  padding: 0;
+}

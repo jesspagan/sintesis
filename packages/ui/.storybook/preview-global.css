@@ -1,0 +1,12 @@
+html {
+  font-size: 62.5%;
+  font-family: var(--gnrc-font-sans);
+}
+
+body {
+  margin: 0;
+  background-color: var(--gnrc-color-neutral-100);
+  color: var(--gnrc-text-primary);
+  font-size: var(--gnrc-text-base);
+  line-height: var(--gnrc-leading-normal);
+}

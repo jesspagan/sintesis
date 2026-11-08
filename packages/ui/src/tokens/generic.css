@@ -1,0 +1,98 @@
+:root {
+  /* Green palette */
+  --gnrc-color-green-50:  #eef5ef;
+  --gnrc-color-green-100: #d4e8d6;
+  --gnrc-color-green-200: #a9d1ad;
+  --gnrc-color-green-300: #74b37a;
+  --gnrc-color-green-400: #4a9452;
+  --gnrc-color-green-500: #2d7535;
+  --gnrc-color-green-600: #235c2a;
+  --gnrc-color-green-700: #1a4420;
+  --gnrc-color-green-800: #112d16;
+  --gnrc-color-green-900: #09170b;
+
+  /* Neutral palette */
+  --gnrc-color-neutral-50:  #faf9f6;
+  --gnrc-color-neutral-100: #f2f1ed;
+  --gnrc-color-neutral-200: #e4e3de;
+  --gnrc-color-neutral-300: #cccbc4;
+  --gnrc-color-neutral-400: #a8a79f;
+  --gnrc-color-neutral-500: #7e7d75;
+  --gnrc-color-neutral-600: #5c5c55;
+  --gnrc-color-neutral-700: #3f3f3a;
+  --gnrc-color-neutral-800: #272724;
+  --gnrc-color-neutral-900: #131310;
+
+  /* Status palettes */
+  --gnrc-color-success-50:  #edf7ee;
+  --gnrc-color-success-100: #d1edcf;
+  --gnrc-color-success-500: #2f7c31;
+  --gnrc-color-success-800: #1a4a1b;
+
+  --gnrc-color-warning-50:  #fff8e6;
+  --gnrc-color-warning-100: #fdeec0;
+  --gnrc-color-warning-500: #c47c00;
+  --gnrc-color-warning-800: #7a4c00;
+
+  --gnrc-color-error-50:  #fdf0ee;
+  --gnrc-color-error-100: #f8d4cf;
+  --gnrc-color-error-500: #c0392b;
+  --gnrc-color-error-800: #7a1f17;
+
+  --gnrc-color-info-50:  #edf4ff;
+  --gnrc-color-info-100: #d0e4fd;
+  --gnrc-color-info-500: #1a68c4;
+  --gnrc-color-info-800: #0e3f78;
+
+  /* Spacing scale (1rem = 10px) */
+  --gnrc-space-0:  0;
+  --gnrc-space-1:  0.4rem;
+  --gnrc-space-2:  0.8rem;
+  --gnrc-space-3:  1.2rem;
+  --gnrc-space-4:  1.6rem;
+  --gnrc-space-5:  2.0rem;
+  --gnrc-space-6:  2.4rem;
+  --gnrc-space-8:  3.2rem;
+  --gnrc-space-10: 4.0rem;
+  --gnrc-space-12: 4.8rem;
+  --gnrc-space-16: 6.4rem;
+  --gnrc-space-20: 8.0rem;
+  --gnrc-space-24: 9.6rem;
+  --gnrc-space-32: 12.8rem;
+
+  /* Type scale */
+  --gnrc-text-xs:   1.0rem;
+  --gnrc-text-sm:   1.2rem;
+  --gnrc-text-base: 1.4rem;
+  --gnrc-text-md:   1.6rem;
+  --gnrc-text-lg:   1.8rem;
+  --gnrc-text-xl:   2.0rem;
+  --gnrc-text-2xl:  2.4rem;
+  --gnrc-text-3xl:  3.0rem;
+  --gnrc-text-4xl:  3.6rem;
+  --gnrc-text-5xl:  4.8rem;
+
+  /* Font weight */
+  --gnrc-weight-regular:  400;
+  --gnrc-weight-medium:   500;
+  --gnrc-weight-semibold: 600;
+
+  /* Line height */
+  --gnrc-leading-tight:   1.2;
+  --gnrc-leading-snug:    1.35;
+  --gnrc-leading-normal:  1.5;
+  --gnrc-leading-relaxed: 1.65;
+
+  /* Letter spacing */
+  --gnrc-tracking-tight:  -0.02em;
+  --gnrc-tracking-normal: 0;
+  --gnrc-tracking-wide:   0.04em;
+  --gnrc-tracking-wider:  0.08em;
+
+  /* Border radius */
+  --gnrc-radius-sm:   0.3rem;
+  --gnrc-radius-md:   0.6rem;
+  --gnrc-radius-lg:   1.0rem;
+  --gnrc-radius-xl:   1.6rem;
+  --gnrc-radius-full: 9999px;
+}

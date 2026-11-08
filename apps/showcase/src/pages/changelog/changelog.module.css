@@ -1,0 +1,53 @@
+.page {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: var(--gnrc-space-12) var(--gnrc-space-6);
+}
+
+.markdown {
+  font-family: var(--gnrc-font-sans);
+  color: var(--gnrc-text-primary);
+  line-height: var(--gnrc-leading-relaxed);
+}
+
+.markdown h1,
+.markdown h2,
+.markdown h3 {
+  font-weight: var(--gnrc-weight-semibold);
+  letter-spacing: var(--gnrc-tracking-tight);
+  text-transform: lowercase;
+  color: var(--gnrc-text-primary);
+  margin: var(--gnrc-space-6) 0 var(--gnrc-space-2);
+}
+
+.markdown h1 { font-size: var(--gnrc-text-2xl); }
+.markdown h2 { font-size: var(--gnrc-text-xl); }
+.markdown h3 { font-size: var(--gnrc-text-lg); }
+
+.markdown p {
+  margin: var(--gnrc-space-2) 0;
+  color: var(--gnrc-text-secondary);
+}
+
+.markdown ul {
+  margin: var(--gnrc-space-2) 0;
+  padding-left: var(--gnrc-space-6);
+}
+
+.markdown li {
+  margin: var(--gnrc-space-1) 0;
+  color: var(--gnrc-text-secondary);
+}
+
+.markdown a {
+  color: var(--gnrc-text-brand);
+  text-decoration: underline;
+}
+
+.markdown code {
+  font-family: var(--gnrc-font-mono);
+  font-size: var(--gnrc-text-sm);
+  background: var(--gnrc-bg-sunken);
+  padding: 0.1em 0.4em;
+  border-radius: var(--gnrc-radius-sm);
+}
